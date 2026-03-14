@@ -1,0 +1,16 @@
+# Build artifacts
+*.o
+*.a
+*.dSYM/
+
+# Binaries
+test_plcode
+gen_wav
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

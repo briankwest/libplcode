@@ -1,0 +1,131 @@
+#ifndef PLCODE_INTERNAL_H
+#define PLCODE_INTERNAL_H
+
+#include "plcode.h"
+
+/* ── Sine LUT ── */
+#define PLCODE_SINE_LUT_SIZE 1024
+
+extern int16_t plcode_sine_lut[PLCODE_SINE_LUT_SIZE];
+
+/* ── CTCSS tone table (tenths of Hz) ── */
+extern const uint16_t plcode_ctcss_tones[PLCODE_CTCSS_NUM_TONES];
+
+/* ── DCS code table (octal numbers) ── */
+extern const uint16_t plcode_dcs_codes[PLCODE_DCS_NUM_CODES];
+
+/* ── DCS precomputed Golay codewords (filled at init) ── */
+extern uint32_t plcode_dcs_codewords[PLCODE_DCS_NUM_CODES];
+
+/* ── Table initialization (call before first use) ── */
+void plcode_tables_init(void);
+
+/* ── Fixed-point helpers ── */
+
+static inline int16_t plcode_clamp16(int32_t x)
+{
+    if (x > 32767)  return 32767;
+    if (x < -32768) return -32768;
+    return (int16_t)x;
+}
+
+/* Lookup sine from phase accumulator (top 10 bits). */
+static inline int16_t plcode_sine_lookup(uint32_t phase)
+{
+    return plcode_sine_lut[(phase >> 22) & (PLCODE_SINE_LUT_SIZE - 1)];
+}
+
+/* Scale Q15 sine value by amplitude. */
+static inline int16_t plcode_scale(int16_t sine_val, int16_t amplitude)
+{
+    return (int16_t)(((int32_t)sine_val * amplitude) >> 15);
+}
+
+/* ── Validate sample rate ── */
+static inline int plcode_valid_rate(int rate)
+{
+    return (rate == 8000 || rate == 16000 || rate == 32000 || rate == 48000);
+}
+
+/* ── Golay polynomial ── */
+#define PLCODE_GOLAY_POLY 0xC75u  /* x^11+x^10+x^6+x^5+x^4+x^2+1 */
+
+/* ── DCS constants ── */
+#define PLCODE_DCS_BITRATE     134.4   /* bits per second */
+#define PLCODE_DCS_CODEWORD_BITS 23
+
+/* ── CTCSS Encoder context ── */
+struct plcode_ctcss_enc {
+    uint32_t phase;          /* Phase accumulator */
+    uint32_t phase_inc;      /* Phase increment per sample */
+    int16_t  amplitude;      /* Peak amplitude */
+};
+
+/* ── CTCSS Decoder context ── */
+struct plcode_ctcss_dec {
+    int      rate;
+    int      block_size;     /* = sample_rate (1 second window) */
+    int      sample_count;   /* Samples accumulated in current block */
+
+    /* Goertzel state for each tone (int64 to avoid overflow at high rates) */
+    int64_t  s1[PLCODE_CTCSS_NUM_TONES]; /* s[n-1] */
+    int64_t  s2[PLCODE_CTCSS_NUM_TONES]; /* s[n-2] */
+    int32_t  coeff[PLCODE_CTCSS_NUM_TONES]; /* 2*cos(2*pi*f/fs) in Q28 */
+
+    /* Detection state */
+    int      prev_tone;      /* Previous detected tone index (-1 = none) */
+    int      confirm_count;  /* Consecutive detections of same tone */
+};
+
+/* ── DCS Encoder context ── */
+struct plcode_dcs_enc {
+    int      rate;
+    uint32_t codeword;       /* 23-bit Golay codeword */
+    int      inverted;       /* XOR flag */
+    int16_t  amplitude;
+
+    /* Bit timing */
+    uint32_t bit_phase;      /* Fractional accumulator for bit clock */
+    uint32_t bit_phase_inc;  /* Increment per sample */
+    int      bit_index;      /* Current bit in codeword (0..22) */
+
+    /* IIR LPF state */
+    int32_t  lpf_state;      /* Single-pole IIR state, Q15 */
+    int32_t  lpf_alpha;      /* Filter coefficient, Q15 */
+};
+
+/* ── DCS Decoder context ── */
+struct plcode_dcs_dec {
+    int      rate;
+
+    /* 2nd-order Butterworth LPF (Q14 coefficients) */
+    int32_t  lpf_b[3];
+    int32_t  lpf_a[2];       /* a1, a2 (negated for direct form) */
+    int32_t  lpf_x[2];       /* Input history */
+    int32_t  lpf_y[2];       /* Output history */
+
+    /* Comparator with hysteresis */
+    int      last_bit;        /* Current hard decision */
+    int16_t  hyst_high;       /* High threshold */
+    int16_t  hyst_low;        /* Low threshold */
+
+    /* PLL bit clock */
+    uint32_t pll_phase;       /* Phase accumulator */
+    uint32_t pll_inc;         /* Nominal increment per sample */
+    int      prev_input;      /* Previous comparator output for edge detect */
+
+    /* Shift register */
+    uint32_t shift_reg;       /* 23-bit shift register */
+    int      total_bits;      /* Total bits shifted in (for initial fill) */
+
+    /* Detection state */
+    int      match_code;      /* Matched code index, or -1 */
+    int      match_inv;       /* Matched inverted flag */
+    int      match_count;     /* Consecutive match count */
+    int      bits_since_match;/* Bits since last match (for alignment) */
+    int      confirmed_code;  /* Confirmed code index */
+    int      confirmed_inv;   /* Confirmed inverted flag */
+    int      confirmed;       /* Detection confirmed */
+};
+
+#endif /* PLCODE_INTERNAL_H */
