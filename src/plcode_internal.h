@@ -128,4 +128,37 @@ struct plcode_dcs_dec {
     int      confirmed;       /* Detection confirmed */
 };
 
+/* ── DTMF tables ── */
+extern const uint16_t plcode_dtmf_row_freqs[4];  /* 697, 770, 852, 941 Hz */
+extern const uint16_t plcode_dtmf_col_freqs[4];  /* 1209, 1336, 1477, 1633 Hz */
+extern const char plcode_dtmf_digits[PLCODE_DTMF_NUM_DIGITS];
+
+/* ── DTMF constants ── */
+#define PLCODE_DTMF_BLOCK_DIV 50  /* block_size = rate / 50 → 20ms window */
+
+/* ── DTMF Encoder context ── */
+struct plcode_dtmf_enc {
+    uint32_t row_phase;      /* Phase accumulator for row tone */
+    uint32_t row_phase_inc;  /* Phase increment per sample */
+    uint32_t col_phase;      /* Phase accumulator for column tone */
+    uint32_t col_phase_inc;  /* Phase increment per sample */
+    int16_t  amplitude;      /* Peak amplitude per tone */
+};
+
+/* ── DTMF Decoder context ── */
+struct plcode_dtmf_dec {
+    int      rate;
+    int      block_size;     /* = rate / PLCODE_DTMF_BLOCK_DIV (20ms) */
+    int      sample_count;   /* Samples accumulated in current block */
+
+    /* Goertzel state: indices 0..3 = row freqs, 4..7 = col freqs */
+    int64_t  s1[8];          /* s[n-1] */
+    int64_t  s2[8];          /* s[n-2] */
+    int32_t  coeff[8];       /* 2*cos(2*pi*f/fs) in Q28 */
+
+    /* Detection state */
+    int      prev_digit;     /* Previous detected digit index (-1 = none) */
+    int      confirm_count;  /* Consecutive detections of same digit */
+};
+
 #endif /* PLCODE_INTERNAL_H */

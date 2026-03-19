@@ -150,6 +150,48 @@ static void generate_dcs(void)
     free(buf);
 }
 
+static void generate_dtmf(void)
+{
+    int i;
+    /* DTMF tones are short — generate 500ms */
+    int dtmf_samples = SAMPLE_RATE / 2;
+    int16_t *buf = (int16_t *)calloc((size_t)dtmf_samples, sizeof(int16_t));
+    if (!buf) { fprintf(stderr, "alloc failed\n"); return; }
+
+    printf("Generating DTMF tones...\n");
+
+    for (i = 0; i < PLCODE_DTMF_NUM_DIGITS; i++) {
+        char digit = plcode_dtmf_digit_char(i);
+        if (digit == '\0') continue;
+
+        plcode_dtmf_enc_t *enc = NULL;
+        if (plcode_dtmf_enc_create(&enc, SAMPLE_RATE, digit, AMPLITUDE) != PLCODE_OK) {
+            fprintf(stderr, "  Failed to create encoder for DTMF '%c'\n", digit);
+            continue;
+        }
+
+        memset(buf, 0, (size_t)dtmf_samples * sizeof(int16_t));
+        plcode_dtmf_enc_process(enc, buf, (size_t)dtmf_samples);
+
+        char filename[64];
+        /* Use 'star' and 'hash' for filesystem-safe names */
+        if (digit == '*')
+            snprintf(filename, sizeof(filename), "wav/dtmf_star.wav");
+        else if (digit == '#')
+            snprintf(filename, sizeof(filename), "wav/dtmf_hash.wav");
+        else
+            snprintf(filename, sizeof(filename), "wav/dtmf_%c.wav", digit);
+
+        if (write_wav(filename, buf, dtmf_samples, SAMPLE_RATE) == 0) {
+            printf("  %s  (DTMF '%c')\n", filename, digit);
+        }
+
+        plcode_dtmf_enc_destroy(enc);
+    }
+
+    free(buf);
+}
+
 int main(void)
 {
     mkdir("wav", 0755);
@@ -161,6 +203,8 @@ int main(void)
     generate_ctcss();
     printf("\n");
     generate_dcs();
+    printf("\n");
+    generate_dtmf();
 
     printf("\nDone.\n");
     return 0;

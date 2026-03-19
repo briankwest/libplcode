@@ -51,6 +51,20 @@ const uint16_t plcode_dcs_codes[PLCODE_DCS_NUM_CODES] = {
     0703, 0712, 0723, 0731, 0732, 0734, 0743, 0754,
 };
 
+/* 4 DTMF row frequencies in Hz. */
+const uint16_t plcode_dtmf_row_freqs[4] = { 697, 770, 852, 941 };
+
+/* 4 DTMF column frequencies in Hz. */
+const uint16_t plcode_dtmf_col_freqs[4] = { 1209, 1336, 1477, 1633 };
+
+/* 16 DTMF digit characters, row-major: rows 697/770/852/941 × cols 1209/1336/1477/1633. */
+const char plcode_dtmf_digits[PLCODE_DTMF_NUM_DIGITS] = {
+    '1', '2', '3', 'A',
+    '4', '5', '6', 'B',
+    '7', '8', '9', 'C',
+    '*', '0', '#', 'D'
+};
+
 /* Precomputed Golay codewords for each DCS code — filled at init. */
 uint32_t plcode_dcs_codewords[PLCODE_DCS_NUM_CODES];
 
@@ -105,6 +119,23 @@ int plcode_dcs_code_index(uint16_t octal_code)
     int i;
     for (i = 0; i < PLCODE_DCS_NUM_CODES; i++) {
         if (plcode_dcs_codes[i] == octal_code)
+            return i;
+    }
+    return -1;
+}
+
+char plcode_dtmf_digit_char(int index)
+{
+    if (index < 0 || index >= PLCODE_DTMF_NUM_DIGITS)
+        return '\0';
+    return plcode_dtmf_digits[index];
+}
+
+int plcode_dtmf_digit_index(char digit)
+{
+    int i;
+    for (i = 0; i < PLCODE_DTMF_NUM_DIGITS; i++) {
+        if (plcode_dtmf_digits[i] == digit)
             return i;
     }
     return -1;

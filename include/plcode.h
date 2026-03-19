@@ -156,6 +156,71 @@ void plcode_dcs_dec_reset(plcode_dcs_dec_t *ctx);
 /* Destroy decoder, free all memory. */
 void plcode_dcs_dec_destroy(plcode_dcs_dec_t *ctx);
 
+/* ── DTMF digit table ── */
+
+#define PLCODE_DTMF_NUM_DIGITS 16
+
+/* Returns digit character ('0'-'9','*','#','A'-'D') for index 0..15.
+ * Returns '\0' on invalid index. */
+char plcode_dtmf_digit_char(int index);
+
+/* Returns index 0..15 for a digit character, or -1 if invalid.
+ * Accepts uppercase A-D only. */
+int plcode_dtmf_digit_index(char digit);
+
+/* ── DTMF Encoder ── */
+
+typedef struct plcode_dtmf_enc plcode_dtmf_enc_t;
+
+/* Create a DTMF tone encoder.
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   digit:     DTMF digit character ('0'-'9','*','#','A'-'D').
+ *   amplitude: Peak amplitude per tone 0..32767.
+ *              Combined output peaks at 2x amplitude.
+ */
+int plcode_dtmf_enc_create(plcode_dtmf_enc_t **ctx,
+                            int rate, char digit, int16_t amplitude);
+
+/* Mix DTMF dual-tone into PCM buffer (additive, with clamping).
+ * buf: signed 16-bit PCM samples, modified in place.
+ * n:   number of samples. */
+void plcode_dtmf_enc_process(plcode_dtmf_enc_t *ctx, int16_t *buf, size_t n);
+
+/* Destroy encoder, free all memory. */
+void plcode_dtmf_enc_destroy(plcode_dtmf_enc_t *ctx);
+
+/* ── DTMF Decoder ── */
+
+typedef struct plcode_dtmf_dec plcode_dtmf_dec_t;
+
+typedef struct {
+    int      detected;     /* 1 if a DTMF digit is detected, 0 otherwise */
+    int      digit_index;  /* Index 0..15, or -1 */
+    char     digit;        /* Digit character ('0'-'9','*','#','A'-'D'), or '\0' */
+    uint16_t row_freq;     /* Row frequency in Hz, or 0 */
+    uint16_t col_freq;     /* Column frequency in Hz, or 0 */
+} plcode_dtmf_result_t;
+
+/* Create a DTMF tone decoder.
+ *   ctx:  Receives allocated context pointer.
+ *   rate: Sample rate (8000/16000/32000/48000). */
+int plcode_dtmf_dec_create(plcode_dtmf_dec_t **ctx, int rate);
+
+/* Feed PCM samples to decoder.
+ * buf:    signed 16-bit PCM samples (not modified).
+ * n:      number of samples.
+ * result: detection result (updated when a block completes). */
+void plcode_dtmf_dec_process(plcode_dtmf_dec_t *ctx,
+                              const int16_t *buf, size_t n,
+                              plcode_dtmf_result_t *result);
+
+/* Reset decoder state (e.g., on channel change). */
+void plcode_dtmf_dec_reset(plcode_dtmf_dec_t *ctx);
+
+/* Destroy decoder, free all memory. */
+void plcode_dtmf_dec_destroy(plcode_dtmf_dec_t *ctx);
+
 /* ── Golay (23,12) — exposed for testing ── */
 
 /* Encode 12-bit data word to 23-bit Golay codeword. */
