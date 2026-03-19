@@ -45,13 +45,22 @@ int plcode_ctcss_tone_index(uint16_t freq_x10);
 
 /* ── DCS code table ── */
 
-/* Returns the octal code number (e.g., 23, 25, 26 ...).
+/* Returns the DCS code label (e.g., 23, 25, 26, 47, 754 ...).
+ * Labels use octal digits written as a decimal integer:
+ *   DCS 023 → 23, DCS 047 → 47, DCS 754 → 754.
  * index: 0 .. PLCODE_DCS_NUM_CODES-1
  * Returns 0 on invalid index. */
 uint16_t plcode_dcs_code_number(int index);
 
-/* Returns the index for an octal code number, or -1 if not found. */
-int plcode_dcs_code_index(uint16_t octal_code);
+/* Returns the index for a DCS code label, or -1 if not found. */
+int plcode_dcs_code_index(uint16_t code_label);
+
+/* Convert DCS label (23) to internal binary value (19).
+ * Returns 0 on invalid label (contains non-octal digit). */
+uint16_t plcode_dcs_label_to_code(int label);
+
+/* Convert internal binary value (19) to DCS label (23). */
+int plcode_dcs_code_to_label(uint16_t code);
 
 /* ── CTCSS Encoder ── */
 
@@ -111,7 +120,8 @@ typedef struct plcode_dcs_enc plcode_dcs_enc_t;
 /* Create a DCS code encoder.
  *   ctx:       Receives allocated context pointer.
  *   rate:      Sample rate (8000/16000/32000/48000).
- *   code:      Octal code number (e.g., 23).
+ *   code:      DCS code label (e.g., 23 for DCS 023, 47 for DCS 047).
+ *              Labels use octal digits written as a decimal integer.
  *   inverted:  0 for normal, 1 for inverted (DPL).
  *   amplitude: Peak amplitude 0..32767. */
 int plcode_dcs_enc_create(plcode_dcs_enc_t **ctx,
@@ -133,7 +143,7 @@ typedef struct plcode_dcs_dec plcode_dcs_dec_t;
 typedef struct {
     int      detected;    /* 1 if a code is detected, 0 otherwise */
     int      code_index;  /* Index into code table, or -1 */
-    uint16_t code_number; /* Octal code number, or 0 */
+    uint16_t code_number; /* DCS code label (e.g., 23 for DCS 023), or 0 */
     int      inverted;    /* 1 if inverted (DPL), 0 if normal */
 } plcode_dcs_result_t;
 

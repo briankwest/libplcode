@@ -104,6 +104,18 @@ static int comparator(plcode_dcs_dec_t *c, int16_t input)
     return c->last_bit;
 }
 
+/* Direct internal lookup — matches raw binary code value against the table.
+ * Unlike the public plcode_dcs_code_index which accepts labels. */
+static int dcs_code_index_internal(uint16_t raw_code)
+{
+    int i;
+    for (i = 0; i < PLCODE_DCS_NUM_CODES; i++) {
+        if (plcode_dcs_codes[i] == raw_code)
+            return i;
+    }
+    return -1;
+}
+
 /* Try to extract a valid DCS code from a 23-bit shift register value.
  * Returns code table index or -1. Sets *inv to 0 (normal) or 1 (inverted). */
 static int extract_dcs_code(uint32_t sr, int *inv)
@@ -114,7 +126,7 @@ static int extract_dcs_code(uint32_t sr, int *inv)
     data12 = (uint16_t)(sr >> 11);
     if ((data12 & 0xE00) == 0x800) {
         code9 = data12 & 0x1FF;
-        int idx = plcode_dcs_code_index(code9);
+        int idx = dcs_code_index_internal(code9);
         if (idx >= 0) {
             *inv = 0;
             return idx;
@@ -126,7 +138,7 @@ static int extract_dcs_code(uint32_t sr, int *inv)
     data12 = (uint16_t)(comp >> 11);
     if ((data12 & 0xE00) == 0x800) {
         code9 = data12 & 0x1FF;
-        int idx = plcode_dcs_code_index(code9);
+        int idx = dcs_code_index_internal(code9);
         if (idx >= 0) {
             *inv = 1;
             return idx;
@@ -234,7 +246,8 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
         if (ctx->confirmed) {
             result->detected = 1;
             result->code_index = ctx->confirmed_code;
-            result->code_number = plcode_dcs_codes[ctx->confirmed_code];
+            result->code_number = (uint16_t)plcode_dcs_code_to_label(
+                                      plcode_dcs_codes[ctx->confirmed_code]);
             result->inverted = ctx->confirmed_inv;
         } else {
             result->detected = 0;

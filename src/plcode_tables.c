@@ -108,18 +108,56 @@ int plcode_ctcss_tone_index(uint16_t freq_x10)
     return -1;
 }
 
+/* Convert DCS label (23) to internal binary value (19).
+ * Label digits are octal: 23 → 2*8+3 = 19. */
+uint16_t plcode_dcs_label_to_code(int label)
+{
+    uint16_t result = 0;
+    int mult = 1;
+    if (label <= 0) return 0;
+    while (label > 0) {
+        int digit = label % 10;
+        if (digit > 7) return 0;  /* invalid octal digit */
+        result = (uint16_t)(result + digit * mult);
+        label /= 10;
+        mult *= 8;
+    }
+    return result;
+}
+
+/* Convert internal binary value (19) to DCS label (23). */
+int plcode_dcs_code_to_label(uint16_t code)
+{
+    int result = 0;
+    int mult = 1;
+    if (code == 0) return 0;
+    while (code > 0) {
+        result += (code & 7) * mult;
+        code >>= 3;
+        mult *= 10;
+    }
+    return result;
+}
+
+/* Return DCS code label for a table index.
+ * Converts internal binary value to label. */
 uint16_t plcode_dcs_code_number(int index)
 {
     if (index < 0 || index >= PLCODE_DCS_NUM_CODES)
         return 0;
-    return plcode_dcs_codes[index];
+    return (uint16_t)plcode_dcs_code_to_label(plcode_dcs_codes[index]);
 }
 
-int plcode_dcs_code_index(uint16_t octal_code)
+/* Find table index for a DCS code label.
+ * Converts label to internal binary value before lookup. */
+int plcode_dcs_code_index(uint16_t code_label)
 {
     int i;
+    uint16_t internal = plcode_dcs_label_to_code((int)code_label);
+    if (internal == 0 && code_label != 0)
+        return -1;  /* invalid label */
     for (i = 0; i < PLCODE_DCS_NUM_CODES; i++) {
-        if (plcode_dcs_codes[i] == octal_code)
+        if (plcode_dcs_codes[i] == internal)
             return i;
     }
     return -1;

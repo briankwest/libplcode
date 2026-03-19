@@ -20,7 +20,7 @@ static const int sample_rates[] = { 8000, 16000, 32000, 48000 };
 void test_dcs_encode_decode_single(void)
 {
     int rate = 8000;
-    uint16_t code = 023; /* Octal 023 */
+    uint16_t code = 23; /* DCS label 023 */
     int16_t amplitude = 3000;
 
     TEST("encode/decode DCS 023 @ 8000 Hz");
@@ -51,7 +51,7 @@ void test_dcs_encode_decode_single(void)
         PASS();
     } else {
         char msg[128];
-        snprintf(msg, sizeof(msg), "detected=%d code=%03o inv=%d (expected 023 normal)",
+        snprintf(msg, sizeof(msg), "detected=%d code=%03d inv=%d (expected 023 normal)",
                  result.detected, result.code_number, result.inverted);
         FAIL(msg);
     }
@@ -65,7 +65,7 @@ cleanup:
 void test_dcs_inverted(void)
 {
     int rate = 8000;
-    uint16_t code = 023;
+    uint16_t code = 23;
 
     TEST("encode/decode DCS 023 inverted @ 8000 Hz");
 
@@ -89,7 +89,7 @@ void test_dcs_inverted(void)
         PASS();
     } else {
         char msg[128];
-        snprintf(msg, sizeof(msg), "detected=%d code=%03o inv=%d (expected 023 inverted)",
+        snprintf(msg, sizeof(msg), "detected=%d code=%03d inv=%d (expected 023 inverted)",
                  result.detected, result.code_number, result.inverted);
         FAIL(msg);
     }
@@ -138,7 +138,7 @@ void test_dcs_all_codes_single_rate(void)
         if (result.detected && result.code_number == code && !result.inverted) {
             passed_count++;
         } else {
-            printf("\n    FAIL: DCS %03o (detected=%d code=%03o inv=%d)",
+            printf("\n    FAIL: DCS %03d (detected=%d code=%03d inv=%d)",
                    code, result.detected, result.code_number, result.inverted);
         }
 
@@ -162,7 +162,7 @@ void test_dcs_all_codes_single_rate(void)
 void test_dcs_multi_rate(void)
 {
     /* Test a representative code at all sample rates */
-    uint16_t code = 0145; /* Octal 145 */
+    uint16_t code = 145; /* DCS label 145 */
     int r;
     int total = 0, passed_count = 0;
     char testname[80];
@@ -197,7 +197,7 @@ void test_dcs_multi_rate(void)
         if (result.detected && result.code_number == code) {
             passed_count++;
         } else {
-            printf("\n    FAIL: DCS %03o @ %d Hz (detected=%d code=%03o)",
+            printf("\n    FAIL: DCS %03d @ %d Hz (detected=%d code=%03d)",
                    code, rate, result.detected, result.code_number);
         }
 
