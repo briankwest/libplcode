@@ -1,8 +1,8 @@
 # libplcode
 
-Portable C library for encoding and decoding **CTCSS (PL) tones** and **DCS (DPL) codes** in signed 16-bit linear PCM audio. Used for sub-audible squelch signaling in two-way radio.
+Portable C library for encoding and decoding **CTCSS (PL) tones**, **DCS (DPL) codes**, **DTMF tones**, and **CW ID (Morse code)** in signed 16-bit linear PCM audio. Used for signaling in two-way radio.
 
-C99, no external dependencies beyond libc + libm, integer/fixed-point DSP.
+C99, no external dependencies beyond libc + libm, integer/fixed-point DSP. All decoders can run simultaneously on the same audio stream.
 
 ## Features
 
@@ -10,6 +10,11 @@ C99, no external dependencies beyond libc + libm, integer/fixed-point DSP.
 - **CTCSS Decoder** — 50 parallel Goertzel filters with 1-second block size, 6 dB SNR threshold, and 2-window hysteresis
 - **DCS Encoder** — NRZ FSK baseband at 134.4 bps from Golay (23,12) codewords, with IIR low-pass smoothing
 - **DCS Decoder** — 2nd-order Butterworth LPF, comparator with hysteresis, zero-crossing PLL for bit clock recovery, Golay-validated codeword extraction
+- **DTMF Encoder** — Dual phase accumulator generating row + column tones for all 16 DTMF symbols
+- **DTMF Decoder** — 8 parallel Goertzel filters (4 row + 4 col), 20 ms blocks, 6 dB SNR per group, twist check, 2-block hysteresis
+- **CW ID Encoder** — Message string to Morse-keyed tone with standard dot/dash/gap timing (5–40 WPM)
+- **CW ID Decoder** — Single Goertzel filter, 10 ms blocks, timing-based dot/dash classification, Morse table lookup, message accumulation
+- **Tone Generator** — Arbitrary-frequency single-tone generator (1–4000 Hz)
 - **Golay (23,12) Codec** — Generator polynomial 0xC75, used for DCS codeword generation and validation
 
 ### Supported Configurations
@@ -19,6 +24,8 @@ C99, no external dependencies beyond libc + libm, integer/fixed-point DSP.
 | Sample rates | 8000, 16000, 32000, 48000 Hz |
 | CTCSS tones | 50 standard (67.0–254.1 Hz) |
 | DCS codes | 104 standard (octal 023–754), normal + inverted |
+| DTMF digits | 16 symbols (0–9, *, #, A–D) |
+| CW ID chars | 37 (A–Z, 0–9, /) |
 | Audio format | Signed 16-bit linear PCM |
 
 ## Building
@@ -111,6 +118,98 @@ plcode_dcs_dec_destroy(dec);
 
 The decoder requires approximately 0.5 seconds for confirmed detection (3 consecutive codeword matches at 134.4 bps).
 
+### DTMF Encoder
+
+```c
+plcode_dtmf_enc_t *enc;
+int rc = plcode_dtmf_enc_create(&enc,
+    8000,   /* sample rate */
+    '5',    /* digit: 0-9, *, #, A-D */
+    3000);  /* amplitude per tone (combined peak = 2x) */
+
+int16_t buf[1600]; /* 200 ms */
+memset(buf, 0, sizeof(buf));
+plcode_dtmf_enc_process(enc, buf, 1600);
+
+plcode_dtmf_enc_destroy(enc);
+```
+
+### DTMF Decoder
+
+```c
+plcode_dtmf_dec_t *dec;
+plcode_dtmf_dec_create(&dec, 8000);
+
+plcode_dtmf_result_t result;
+plcode_dtmf_dec_process(dec, buf, 1600, &result);
+
+if (result.detected) {
+    printf("DTMF '%c' (row %d Hz, col %d Hz)\n",
+           result.digit, result.row_freq, result.col_freq);
+}
+
+plcode_dtmf_dec_destroy(dec);
+```
+
+Detection requires approximately 40 ms (two 20 ms Goertzel blocks with hysteresis).
+
+### CW ID Encoder
+
+```c
+plcode_cwid_enc_t *enc;
+int rc = plcode_cwid_enc_create(&enc,
+    8000,     /* sample rate */
+    "W1AW",   /* message: A-Z, 0-9, /, space */
+    800,      /* tone frequency in Hz */
+    20,       /* speed in WPM */
+    3000);    /* amplitude */
+
+int16_t buf[40000]; /* 5 seconds */
+memset(buf, 0, sizeof(buf));
+plcode_cwid_enc_process(enc, buf, 40000);
+
+if (plcode_cwid_enc_complete(enc)) {
+    printf("Message fully encoded\n");
+}
+
+plcode_cwid_enc_destroy(enc);
+```
+
+### CW ID Decoder
+
+```c
+plcode_cwid_dec_t *dec;
+plcode_cwid_dec_create(&dec,
+    8000,   /* sample rate */
+    800,    /* expected tone frequency */
+    20);    /* expected WPM */
+
+plcode_cwid_result_t result;
+plcode_cwid_dec_process(dec, buf, 40000, &result);
+
+printf("Decoded: %s\n", plcode_cwid_dec_message(dec));
+
+plcode_cwid_dec_destroy(dec);
+```
+
+The decoder accumulates characters into an internal buffer accessible via `plcode_cwid_dec_message()`.
+
+### Tone Generator
+
+```c
+plcode_tone_enc_t *enc;
+int rc = plcode_tone_enc_create(&enc,
+    8000,   /* sample rate */
+    1000,   /* frequency in Hz (1-4000) */
+    3000);  /* amplitude */
+
+int16_t buf[8000];
+memset(buf, 0, sizeof(buf));
+plcode_tone_enc_process(enc, buf, 8000);
+
+plcode_tone_enc_destroy(enc);
+```
+
 ### Table Lookups
 
 ```c
@@ -132,6 +231,18 @@ for (int i = 0; i < PLCODE_DCS_NUM_CODES; i++) {
 
 /* DCS: find index by code */
 int idx = plcode_dcs_code_index(023); /* -> index 0 */
+
+/* DTMF: iterate all 16 digits */
+for (int i = 0; i < PLCODE_DTMF_NUM_DIGITS; i++) {
+    printf("Digit %d: '%c'\n", i, plcode_dtmf_digit_char(i));
+}
+
+/* DTMF: find index by digit */
+int idx = plcode_dtmf_digit_index('5'); /* -> index 5 */
+
+/* CW ID: Morse lookup */
+const char *pat = plcode_cwid_morse('A');     /* -> ".-" */
+char ch = plcode_cwid_decode(".-");           /* -> 'A' */
 ```
 
 ### Golay (23,12)
@@ -157,39 +268,63 @@ if (plcode_golay_check(cw)) {
 
 ### Streaming Usage
 
-The `_process()` functions are designed for streaming. Call them repeatedly with successive audio buffers of any size. Internal state is maintained across calls:
+The `_process()` functions are designed for streaming. Call them repeatedly with successive audio buffers of any size. Internal state is maintained across calls. All decoders operate on `const int16_t *` buffers and can run simultaneously on the same audio stream:
 
 ```c
-plcode_ctcss_dec_t *dec;
-plcode_ctcss_dec_create(&dec, 8000);
-plcode_ctcss_result_t result = {0};
+plcode_ctcss_dec_t *ctcss_dec;
+plcode_dcs_dec_t   *dcs_dec;
+plcode_dtmf_dec_t  *dtmf_dec;
+plcode_cwid_dec_t  *cwid_dec;
+
+plcode_ctcss_dec_create(&ctcss_dec, 8000);
+plcode_dcs_dec_create(&dcs_dec, 8000);
+plcode_dtmf_dec_create(&dtmf_dec, 8000);
+plcode_cwid_dec_create(&cwid_dec, 8000, 800, 20);
+
+plcode_ctcss_result_t ctcss_result = {0};
+plcode_dcs_result_t   dcs_result   = {0};
+plcode_dtmf_result_t  dtmf_result  = {0};
+plcode_cwid_result_t  cwid_result  = {0};
 
 /* Feed audio in 160-sample frames (20 ms at 8 kHz) */
 while (have_audio()) {
     int16_t frame[160];
     read_audio(frame, 160);
-    plcode_ctcss_dec_process(dec, frame, 160, &result);
 
-    if (result.detected) {
-        printf("Detected: %.1f Hz\n", result.tone_freq_x10 / 10.0);
-    }
+    plcode_ctcss_dec_process(ctcss_dec, frame, 160, &ctcss_result);
+    plcode_dcs_dec_process(dcs_dec, frame, 160, &dcs_result);
+    plcode_dtmf_dec_process(dtmf_dec, frame, 160, &dtmf_result);
+    plcode_cwid_dec_process(cwid_dec, frame, 160, &cwid_result);
+
+    if (ctcss_result.detected)
+        printf("CTCSS: %.1f Hz\n", ctcss_result.tone_freq_x10 / 10.0);
+    if (dcs_result.detected)
+        printf("DCS: %03o%s\n", dcs_result.code_number,
+               dcs_result.inverted ? " inv" : "");
+    if (dtmf_result.detected)
+        printf("DTMF: '%c'\n", dtmf_result.digit);
+    if (cwid_result.new_character)
+        printf("CW: '%c' (msg so far: %s)\n",
+               cwid_result.character, plcode_cwid_dec_message(cwid_dec));
 }
 
-/* Reset state on channel change */
-plcode_ctcss_dec_reset(dec);
-
-plcode_ctcss_dec_destroy(dec);
+plcode_ctcss_dec_destroy(ctcss_dec);
+plcode_dcs_dec_destroy(dcs_dec);
+plcode_dtmf_dec_destroy(dtmf_dec);
+plcode_cwid_dec_destroy(cwid_dec);
 ```
 
 ## Sample WAV Files
 
-The `wav/` directory contains 258 pre-generated sample files (16-bit mono PCM, 8000 Hz, 3 seconds each):
+The `wav/` directory contains pre-generated sample files (16-bit mono PCM, 8000 Hz):
 
 | Files | Count | Description |
 |-------|-------|-------------|
-| `ctcss_XXX_X.wav` | 50 | CTCSS tones (e.g., `ctcss_100_0.wav` = 100.0 Hz) |
-| `dcs_NNN.wav` | 104 | DCS codes, normal (e.g., `dcs_023.wav`) |
-| `dcs_NNN_inv.wav` | 104 | DCS codes, inverted (e.g., `dcs_023_inv.wav`) |
+| `ctcss_XXX_X.wav` | 50 | CTCSS tones, 3 sec (e.g., `ctcss_100_0.wav` = 100.0 Hz) |
+| `dcs_NNN.wav` | 104 | DCS codes, normal, 3 sec (e.g., `dcs_023.wav`) |
+| `dcs_NNN_inv.wav` | 104 | DCS codes, inverted, 3 sec (e.g., `dcs_023_inv.wav`) |
+| `dtmf_X.wav` | 16 | DTMF digits, 500 ms (e.g., `dtmf_5.wav`, `dtmf_star.wav`) |
+| `cwid_W1AW.wav` | 1 | CW ID sample, 5 sec |
 
 ### Regenerating WAV Files
 
@@ -245,6 +380,22 @@ DCS tests:
   no false detection on silence                      PASS
   DCS: 5/5 passed
 
+DTMF tests:
+  encode/decode DTMF '5' @ 8000 Hz                   PASS
+  all digits x all rates (64 combos)                 PASS
+  no false detection on silence                      PASS
+  no false detection on white noise                  PASS
+  single-tone rejection (697 Hz only)                PASS
+  DTMF: 5/5 passed
+
+CW ID tests:
+  encode/decode single char 'A' @ 8000 Hz            PASS
+  encode/decode callsign 'W1AW' @ 8000 Hz            PASS
+  all CW chars individually (37 chars)               PASS
+  no false detection on silence                      PASS
+  'CQ' x all sample rates (4)                        PASS
+  CWID: 5/5 passed
+
 === ALL TESTS PASSED ===
 ```
 
@@ -253,8 +404,12 @@ Tests cover:
 - CTCSS encode/decode round-trip for every tone at every sample rate (200 combinations)
 - DCS encode/decode round-trip for every code (normal + inverted) at 8 kHz
 - DCS encode/decode at all 4 sample rates
-- Noise rejection (white noise and silence produce no false detections)
-- Adjacent tone rejection (67.0 Hz vs 69.3 Hz — minimum spacing of 2.3 Hz)
+- DTMF encode/decode round-trip for every digit at every sample rate (64 combinations)
+- DTMF single-tone rejection (row-only tone does not trigger detection)
+- CW ID encode/decode round-trip for all 37 Morse characters
+- CW ID callsign round-trip ("W1AW") and multi-rate verification
+- Noise rejection (white noise and silence produce no false detections across all decoders)
+- Adjacent tone rejection (CTCSS 67.0 Hz vs 69.3 Hz — minimum spacing of 2.3 Hz)
 
 ## Project Structure
 
@@ -262,19 +417,26 @@ Tests cover:
 libplcode/
   include/plcode.h          — Public API header
   src/plcode_internal.h     — Private shared definitions
-  src/plcode_tables.c       — Sine LUT (1024 entries), tone/code tables
+  src/plcode_tables.c       — Sine LUT (1024 entries), tone/code/Morse tables
   src/plcode_golay.c        — Golay (23,12) codeword generation/validation
   src/plcode_ctcss_enc.c    — CTCSS tone encoder
   src/plcode_ctcss_dec.c    — CTCSS tone decoder (Goertzel)
   src/plcode_dcs_enc.c      — DCS code encoder
   src/plcode_dcs_dec.c      — DCS code decoder
+  src/plcode_dtmf_enc.c     — DTMF dual-tone encoder
+  src/plcode_dtmf_dec.c     — DTMF dual-tone decoder (Goertzel)
+  src/plcode_cwid_enc.c     — CW ID (Morse) encoder
+  src/plcode_cwid_dec.c     — CW ID (Morse) decoder (Goertzel)
+  src/plcode_tone_enc.c     — Arbitrary frequency tone generator
   tests/test_main.c         — Test harness
   tests/test_golay.c        — Golay unit tests
   tests/test_ctcss.c        — CTCSS encode/decode round-trip
   tests/test_dcs.c          — DCS encode/decode round-trip
+  tests/test_dtmf.c         — DTMF encode/decode round-trip
+  tests/test_cwid.c         — CW ID encode/decode round-trip
   tools/gen_wav.c           — WAV file generator
   tools/validate_wav.py     — Independent Python WAV validator
-  wav/                      — 258 pre-generated sample WAV files
+  wav/                      — Pre-generated sample WAV files
   Makefile                  — C99, static lib, -lm only
 ```
 
@@ -305,6 +467,38 @@ libplcode/
 - 23-bit shift register with Golay validation and data word extraction
 - Alignment tracking: skips initial shift register fill, then checks every 23 bits
 - 3 consecutive matches required for confirmed detection
+
+### DTMF Encoder
+- Dual 32-bit phase accumulators (row + column frequencies)
+- Row frequencies: 697, 770, 852, 941 Hz
+- Column frequencies: 1209, 1336, 1477, 1633 Hz
+- Both tones at specified amplitude, additive mixing with clamping
+
+### DTMF Decoder
+- 8 parallel Goertzel filters (4 row + 4 col), 20 ms block size
+- Full-precision magnitude computation with split cross-term to avoid int64 overflow
+- Detection: per-group 6 dB SNR, twist check (10 dB max row/col ratio), 2-block hysteresis
+- Detects all 16 symbols: 0–9, *, #, A–D
+
+### CW ID Encoder
+- Pre-built int8 element sequence: positive = tone (dot-units), negative = gap (dot-units)
+- Standard Morse timing: dot = 1 unit, dash = 3, element gap = 1, char gap = 3, word gap = 7
+- Dot duration = 1200 / WPM ms (PARIS standard)
+- Phase accumulator tone generation via shared sine LUT
+- Finite message: `complete()` reports when the full message has been sent
+
+### CW ID Decoder
+- Single Goertzel filter tuned to expected CW tone frequency
+- 10 ms block size for timing resolution down to 40 WPM
+- Dot/dash classification at 2x dot-length threshold
+- Dual gap thresholds: character boundary at 2x, word boundary at 5x dot-length
+- Pattern-to-character lookup against 37-entry Morse table
+- 128-character internal message buffer with `message()` accessor
+
+### Tone Generator
+- Same phase accumulator + sine LUT approach as CTCSS encoder
+- Accepts any frequency from 1 to 4000 Hz (not limited to CTCSS tone table)
+- Useful for test signals, courtesy tones, alert tones
 
 ### Golay (23,12) Code
 - Generator polynomial: g(x) = x^11 + x^10 + x^6 + x^5 + x^4 + x^2 + 1 (0xC75)
