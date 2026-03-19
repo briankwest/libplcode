@@ -13,7 +13,9 @@ SRC     = src/plcode_tables.c \
           src/plcode_dcs_enc.c \
           src/plcode_dcs_dec.c \
           src/plcode_dtmf_enc.c \
-          src/plcode_dtmf_dec.c
+          src/plcode_dtmf_dec.c \
+          src/plcode_cwid_enc.c \
+          src/plcode_cwid_dec.c
 
 OBJ     = $(SRC:.c=.o)
 
@@ -21,7 +23,8 @@ TEST_SRC = tests/test_main.c \
            tests/test_golay.c \
            tests/test_ctcss.c \
            tests/test_dcs.c \
-           tests/test_dtmf.c
+           tests/test_dtmf.c \
+           tests/test_cwid.c
 
 TEST_OBJ = $(TEST_SRC:.c=.o)
 

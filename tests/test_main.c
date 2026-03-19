@@ -5,6 +5,7 @@ extern int test_golay(void);
 extern int test_ctcss(void);
 extern int test_dcs(void);
 extern int test_dtmf(void);
+extern int test_cwid(void);
 
 int main(void)
 {
@@ -16,6 +17,7 @@ int main(void)
     failures += test_ctcss();
     failures += test_dcs();
     failures += test_dtmf();
+    failures += test_cwid();
 
     printf("=== %s ===\n", failures ? "SOME TESTS FAILED" : "ALL TESTS PASSED");
 

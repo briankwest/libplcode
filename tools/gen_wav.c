@@ -205,6 +205,27 @@ int main(void)
     generate_dcs();
     printf("\n");
     generate_dtmf();
+    printf("\n");
+
+    /* CW ID — 5 seconds at 800 Hz tone, 20 WPM */
+    {
+        int cwid_samples = SAMPLE_RATE * 5;
+        int16_t *buf = (int16_t *)calloc((size_t)cwid_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_cwid_enc_t *enc = NULL;
+            printf("Generating CW ID...\n");
+            if (plcode_cwid_enc_create(&enc, SAMPLE_RATE, "W1AW", 800, 20,
+                                        AMPLITUDE) == PLCODE_OK) {
+                plcode_cwid_enc_process(enc, buf, (size_t)cwid_samples);
+                if (write_wav("wav/cwid_W1AW.wav", buf, cwid_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/cwid_W1AW.wav  (CW ID 'W1AW')\n");
+                }
+                plcode_cwid_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
 
     printf("\nDone.\n");
     return 0;

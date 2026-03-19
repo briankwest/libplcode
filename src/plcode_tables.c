@@ -1,5 +1,6 @@
 #include "plcode_internal.h"
 #include <math.h>
+#include <string.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -139,4 +140,43 @@ int plcode_dtmf_digit_index(char digit)
             return i;
     }
     return -1;
+}
+
+/* 37 CW ID characters: A-Z, 0-9, / */
+const char plcode_cwid_chars[PLCODE_CWID_NUM_CHARS] = {
+    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+    'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    '0','1','2','3','4','5','6','7','8','9','/'
+};
+
+const char * const plcode_cwid_patterns[PLCODE_CWID_NUM_CHARS] = {
+    ".-",   "-...", "-.-.", "-..",  ".",    "..-.", "--.",  "....",
+    "..",   ".---", "-.-",  ".-..", "--",   "-.",   "---",  ".--.",
+    "--.-", ".-.",  "...",  "-",   "..-",  "...-", ".--",  "-..-",
+    "-.--", "--..",
+    "-----", ".----", "..---", "...--", "....-", ".....", "-....",
+    "--...", "---..", "----.",
+    "-..-."
+};
+
+const char *plcode_cwid_morse(char ch)
+{
+    int i;
+    if (ch >= 'a' && ch <= 'z') ch = (char)(ch - 'a' + 'A');
+    for (i = 0; i < PLCODE_CWID_NUM_CHARS; i++) {
+        if (plcode_cwid_chars[i] == ch)
+            return plcode_cwid_patterns[i];
+    }
+    return NULL;
+}
+
+char plcode_cwid_decode(const char *pattern)
+{
+    int i;
+    if (!pattern) return '\0';
+    for (i = 0; i < PLCODE_CWID_NUM_CHARS; i++) {
+        if (strcmp(plcode_cwid_patterns[i], pattern) == 0)
+            return plcode_cwid_chars[i];
+    }
+    return '\0';
 }

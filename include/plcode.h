@@ -221,6 +221,79 @@ void plcode_dtmf_dec_reset(plcode_dtmf_dec_t *ctx);
 /* Destroy decoder, free all memory. */
 void plcode_dtmf_dec_destroy(plcode_dtmf_dec_t *ctx);
 
+/* ── CW ID (Morse Code) ── */
+
+#define PLCODE_CWID_NUM_CHARS 37
+
+/* Returns Morse pattern for a character (e.g., ".-" for 'A'), or NULL.
+ * Accepts: A-Z (case insensitive), 0-9, /. */
+const char *plcode_cwid_morse(char ch);
+
+/* Returns the character for a Morse pattern, or '\0' if not found. */
+char plcode_cwid_decode(const char *pattern);
+
+/* ── CW ID Encoder ── */
+
+typedef struct plcode_cwid_enc plcode_cwid_enc_t;
+
+/* Create a CW ID encoder.
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   message:   Null-terminated string (A-Z, 0-9, /, space).
+ *   freq:      Tone frequency in Hz (typical: 800, range: 300-3000).
+ *   wpm:       Speed in words per minute (range: 5-40).
+ *   amplitude: Peak amplitude 0..32767.
+ */
+int plcode_cwid_enc_create(plcode_cwid_enc_t **ctx,
+                            int rate, const char *message,
+                            int freq, int wpm, int16_t amplitude);
+
+/* Mix CW ID tone into PCM buffer (additive, with clamping).
+ * After the message is complete, does not modify remaining samples. */
+void plcode_cwid_enc_process(plcode_cwid_enc_t *ctx, int16_t *buf, size_t n);
+
+/* Returns 1 if the entire message has been sent, 0 otherwise. */
+int plcode_cwid_enc_complete(plcode_cwid_enc_t *ctx);
+
+/* Destroy encoder, free all memory. */
+void plcode_cwid_enc_destroy(plcode_cwid_enc_t *ctx);
+
+/* ── CW ID Decoder ── */
+
+typedef struct plcode_cwid_dec plcode_cwid_dec_t;
+
+typedef struct {
+    int  tone_active;    /* 1 if CW tone is currently detected */
+    int  new_character;  /* 1 if a new character was decoded in this call */
+    char character;      /* Most recently decoded character, or '\0' */
+} plcode_cwid_result_t;
+
+/* Create a CW ID decoder.
+ *   ctx:  Receives allocated context pointer.
+ *   rate: Sample rate (8000/16000/32000/48000).
+ *   freq: Expected tone frequency in Hz (300-3000).
+ *   wpm:  Expected speed in words per minute (5-40). */
+int plcode_cwid_dec_create(plcode_cwid_dec_t **ctx,
+                            int rate, int freq, int wpm);
+
+/* Feed PCM samples to decoder.
+ * buf:    signed 16-bit PCM samples (not modified).
+ * n:      number of samples.
+ * result: detection result (updated at end of call). */
+void plcode_cwid_dec_process(plcode_cwid_dec_t *ctx,
+                              const int16_t *buf, size_t n,
+                              plcode_cwid_result_t *result);
+
+/* Get the full decoded message accumulated so far.
+ * Returns pointer to internal null-terminated buffer. */
+const char *plcode_cwid_dec_message(plcode_cwid_dec_t *ctx);
+
+/* Reset decoder state. */
+void plcode_cwid_dec_reset(plcode_cwid_dec_t *ctx);
+
+/* Destroy decoder, free all memory. */
+void plcode_cwid_dec_destroy(plcode_cwid_dec_t *ctx);
+
 /* ── Golay (23,12) — exposed for testing ── */
 
 /* Encode 12-bit data word to 23-bit Golay codeword. */

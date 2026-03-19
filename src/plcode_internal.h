@@ -161,4 +161,57 @@ struct plcode_dtmf_dec {
     int      confirm_count;  /* Consecutive detections of same digit */
 };
 
+/* ── CW ID (Morse) tables ── */
+extern const char plcode_cwid_chars[PLCODE_CWID_NUM_CHARS];
+extern const char * const plcode_cwid_patterns[PLCODE_CWID_NUM_CHARS];
+
+/* ── CW ID constants ── */
+#define PLCODE_CWID_BLOCK_DIV   100  /* block_size = rate / 100 → 10ms */
+#define PLCODE_CWID_MSG_MAX     128
+#define PLCODE_CWID_PATTERN_MAX   8
+
+/* ── CW ID Encoder context ── */
+struct plcode_cwid_enc {
+    uint32_t phase;          /* Phase accumulator for tone */
+    uint32_t phase_inc;      /* Phase increment per sample */
+    int16_t  amplitude;
+    int      dot_samples;    /* Samples per dot-length */
+
+    int8_t  *elements;       /* Element sequence: +N=tone, -N=gap (dot-units), 0=end */
+    int      num_elements;
+    int      cur_element;    /* Current element index */
+    int      cur_sample;     /* Sample position within current element */
+    int      cur_duration;   /* Total samples for current element */
+    int      complete;       /* 1 if message fully sent */
+};
+
+/* ── CW ID Decoder context ── */
+struct plcode_cwid_dec {
+    int      rate;
+    int      block_size;     /* = rate / PLCODE_CWID_BLOCK_DIV (10ms) */
+    int      sample_count;
+
+    /* Single Goertzel filter */
+    int64_t  s1;
+    int64_t  s2;
+    int32_t  coeff;          /* 2*cos(2*pi*f/fs) in Q28 */
+
+    /* Timing */
+    int      dot_samples;
+
+    /* Tone detection state */
+    int      tone_on;
+    int      tone_samples;   /* Duration of current tone period */
+    int      gap_samples;    /* Duration of current gap period */
+
+    /* Pattern accumulation */
+    char     pattern[PLCODE_CWID_PATTERN_MAX];
+    int      pattern_len;
+
+    /* Decoded message buffer */
+    char     message[PLCODE_CWID_MSG_MAX];
+    int      message_len;
+    char     last_char;
+};
+
 #endif /* PLCODE_INTERNAL_H */

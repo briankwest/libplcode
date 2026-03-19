@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 make            # Build libplcode.a static library
-make test       # Build and run all tests (20 tests across 4 suites)
+make test       # Build and run all tests (25 tests across 5 suites)
 make clean      # Remove build artifacts
 ```
 
@@ -14,7 +14,7 @@ There is no single-test runner; all tests run together via `make test`. The test
 
 ## Project Overview
 
-libplcode is a C99 library for encoding/decoding CTCSS (PL) tones, DCS (DPL) codes, and DTMF tones in signed 16-bit PCM audio — signaling for two-way radio. Zero external dependencies beyond libc/libm. All decoders can run simultaneously on the same audio stream.
+libplcode is a C99 library for encoding/decoding CTCSS (PL) tones, DCS (DPL) codes, DTMF tones, and CW ID (Morse code) in signed 16-bit PCM audio — signaling for two-way radio. Zero external dependencies beyond libc/libm. All decoders can run simultaneously on the same audio stream.
 
 ## Architecture
 
@@ -30,10 +30,12 @@ libplcode is a C99 library for encoding/decoding CTCSS (PL) tones, DCS (DPL) cod
 - **DCS decode** (`plcode_dcs_dec.c`): 2nd-order Butterworth LPF → comparator with hysteresis → PLL bit clock recovery → 23-bit shift register → Golay validation, 3 consecutive matches required
 - **DTMF encode** (`plcode_dtmf_enc.c`): Dual phase accumulator → sine LUT → two-tone additive mix into PCM
 - **DTMF decode** (`plcode_dtmf_dec.c`): 8 parallel Goertzel filters (4 row + 4 col), 20ms blocks, 6 dB SNR per group, twist check, 2-block hysteresis
+- **CW ID encode** (`plcode_cwid_enc.c`): Message → Morse element sequence → phase accumulator tone generation with standard dot/dash/gap timing
+- **CW ID decode** (`plcode_cwid_dec.c`): Single Goertzel filter, 10ms blocks, timing-based dot/dash classification, pattern-to-character Morse lookup, message accumulation
 
 **Golay (23,12)** (`plcode_golay.c`): Generator polynomial 0xC75, used by DCS for error detection.
 
-**Tables** (`plcode_tables.c`): Sine LUT, 50 CTCSS tone frequencies (67.0–254.1 Hz), 104 DCS octal codes (023–754), DTMF frequency/digit tables. Must be initialized via `plcode_init()`.
+**Tables** (`plcode_tables.c`): Sine LUT, 50 CTCSS tone frequencies (67.0–254.1 Hz), 104 DCS octal codes (023–754), DTMF frequency/digit tables, 37-character Morse code table. Must be initialized via `plcode_init()`.
 
 ### Key files:
 
