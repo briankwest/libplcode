@@ -131,6 +131,8 @@ struct plcode_dcs_dec {
 /* ── DTMF tables ── */
 extern const uint16_t plcode_dtmf_row_freqs[4];  /* 697, 770, 852, 941 Hz */
 extern const uint16_t plcode_dtmf_col_freqs[4];  /* 1209, 1336, 1477, 1633 Hz */
+extern const uint16_t plcode_dtmf_row_harmonics[4]; /* 2nd harmonics of rows */
+extern const uint16_t plcode_dtmf_col_harmonics[4]; /* 2nd harmonics of cols */
 extern const char plcode_dtmf_digits[PLCODE_DTMF_NUM_DIGITS];
 
 /* ── DTMF constants ── */
@@ -145,20 +147,39 @@ struct plcode_dtmf_enc {
     int16_t  amplitude;      /* Peak amplitude per tone */
 };
 
+/* ── DTMF Decoder state machine ── */
+#define DTMF_ST_IDLE     0
+#define DTMF_ST_PENDING  1
+#define DTMF_ST_ACTIVE   2
+#define DTMF_ST_COOLDOWN 3
+
 /* ── DTMF Decoder context ── */
 struct plcode_dtmf_dec {
     int      rate;
     int      block_size;     /* = rate / PLCODE_DTMF_BLOCK_DIV (20ms) */
     int      sample_count;   /* Samples accumulated in current block */
 
-    /* Goertzel state: indices 0..3 = row freqs, 4..7 = col freqs */
-    int64_t  s1[8];          /* s[n-1] */
-    int64_t  s2[8];          /* s[n-2] */
-    int32_t  coeff[8];       /* 2*cos(2*pi*f/fs) in Q28 */
+    /* Goertzel state: 0..3 row, 4..7 col, 8..15 harmonics */
+    int64_t  s1[16];         /* s[n-1] */
+    int64_t  s2[16];         /* s[n-2] */
+    int32_t  coeff[16];      /* 2*cos(2*pi*f/fs) in Q28 */
 
-    /* Detection state */
-    int      prev_digit;     /* Previous detected digit index (-1 = none) */
-    int      confirm_count;  /* Consecutive detections of same digit */
+    /* State machine (replaces prev_digit/confirm_count) */
+    int      state;          /* DTMF_ST_IDLE/PENDING/ACTIVE/COOLDOWN */
+    int      current_digit;  /* Digit index being tracked (-1 = none) */
+    int      hit_count;      /* Consecutive hits in PENDING */
+    int      miss_count;     /* Consecutive misses in ACTIVE */
+    int      cooldown_count; /* Frames remaining in COOLDOWN */
+    int      cooldown_digit; /* Digit that triggered cooldown */
+
+    /* Options (copied from opts at create time) */
+    int      hits_to_begin;
+    int      misses_to_end;
+    int      min_off_frames;
+    int      normal_twist_x;
+    int      reverse_twist_x;
+    int      harmonic_reject;
+    int      harmonic_thresh_pct;
 };
 
 /* ── CW ID (Morse) tables ── */

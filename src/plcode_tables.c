@@ -58,6 +58,12 @@ const uint16_t plcode_dtmf_row_freqs[4] = { 697, 770, 852, 941 };
 /* 4 DTMF column frequencies in Hz. */
 const uint16_t plcode_dtmf_col_freqs[4] = { 1209, 1336, 1477, 1633 };
 
+/* 2nd harmonics of DTMF row frequencies (all below 4kHz Nyquist @ 8kHz). */
+const uint16_t plcode_dtmf_row_harmonics[4] = { 1394, 1540, 1704, 1882 };
+
+/* 2nd harmonics of DTMF column frequencies. */
+const uint16_t plcode_dtmf_col_harmonics[4] = { 2418, 2672, 2954, 3266 };
+
 /* 16 DTMF digit characters, row-major: rows 697/770/852/941 × cols 1209/1336/1477/1633. */
 const char plcode_dtmf_digits[PLCODE_DTMF_NUM_DIGITS] = {
     '1', '2', '3', 'A',

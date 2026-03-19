@@ -212,10 +212,29 @@ typedef struct {
     uint16_t col_freq;     /* Column frequency in Hz, or 0 */
 } plcode_dtmf_result_t;
 
+/* DTMF decoder options (zero-initialized → all defaults).
+ * Pass NULL to plcode_dtmf_dec_create_ex() for all defaults. */
+typedef struct {
+    int hits_to_begin;       /* Blocks to confirm onset (default: 2) */
+    int misses_to_end;       /* Blocks to confirm offset (default: 3) */
+    int min_off_frames;      /* Same-digit cooldown blocks (default: 2) */
+    int normal_twist_x;      /* Normal twist power ratio (default: 16 = 12dB) */
+    int reverse_twist_x;     /* Reverse twist power ratio (default: 4 = 6dB) */
+    int harmonic_reject;     /* Enable 2nd harmonic check (default: 1) */
+    int harmonic_thresh_pct; /* Harmonic limit as % of fundamental (default: 50) */
+} plcode_dtmf_dec_opts_t;
+
 /* Create a DTMF tone decoder.
  *   ctx:  Receives allocated context pointer.
  *   rate: Sample rate (8000/16000/32000/48000). */
 int plcode_dtmf_dec_create(plcode_dtmf_dec_t **ctx, int rate);
+
+/* Create a DTMF tone decoder with custom options.
+ *   ctx:  Receives allocated context pointer.
+ *   rate: Sample rate (8000/16000/32000/48000).
+ *   opts: Options (NULL → all defaults, zero fields → default). */
+int plcode_dtmf_dec_create_ex(plcode_dtmf_dec_t **ctx, int rate,
+                               const plcode_dtmf_dec_opts_t *opts);
 
 /* Feed PCM samples to decoder.
  * buf:    signed 16-bit PCM samples (not modified).
