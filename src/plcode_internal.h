@@ -214,4 +214,11 @@ struct plcode_cwid_dec {
     char     last_char;
 };
 
+/* ── Tone Generator context ── */
+struct plcode_tone_enc {
+    uint32_t phase;
+    uint32_t phase_inc;
+    int16_t  amplitude;
+};
+
 #endif /* PLCODE_INTERNAL_H */

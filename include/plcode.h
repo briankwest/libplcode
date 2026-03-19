@@ -294,6 +294,27 @@ void plcode_cwid_dec_reset(plcode_cwid_dec_t *ctx);
 /* Destroy decoder, free all memory. */
 void plcode_cwid_dec_destroy(plcode_cwid_dec_t *ctx);
 
+/* ── Tone Generator (arbitrary frequency) ── */
+
+typedef struct plcode_tone_enc plcode_tone_enc_t;
+
+/* Create a single-frequency tone generator.
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   freq:      Tone frequency in Hz (1-4000).
+ *   amplitude: Peak amplitude 0..32767.
+ */
+int plcode_tone_enc_create(plcode_tone_enc_t **ctx,
+                            int rate, int freq, int16_t amplitude);
+
+/* Mix tone into PCM buffer (additive, with clamping).
+ * buf: signed 16-bit PCM samples, modified in place.
+ * n:   number of samples. */
+void plcode_tone_enc_process(plcode_tone_enc_t *ctx, int16_t *buf, size_t n);
+
+/* Destroy encoder, free all memory. */
+void plcode_tone_enc_destroy(plcode_tone_enc_t *ctx);
+
 /* ── Golay (23,12) — exposed for testing ── */
 
 /* Encode 12-bit data word to 23-bit Golay codeword. */

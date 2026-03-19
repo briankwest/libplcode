@@ -15,7 +15,8 @@ SRC     = src/plcode_tables.c \
           src/plcode_dtmf_enc.c \
           src/plcode_dtmf_dec.c \
           src/plcode_cwid_enc.c \
-          src/plcode_cwid_dec.c
+          src/plcode_cwid_dec.c \
+          src/plcode_tone_enc.c
 
 OBJ     = $(SRC:.c=.o)
 
