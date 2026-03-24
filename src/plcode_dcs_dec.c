@@ -6,6 +6,58 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+/* DCS orbit canonicalization.
+ * The Golay(23,12) code is cyclic — rotations of a codeword are valid
+ * codewords for other codes. Each code pairs with an inverted alias
+ * (53 orbits from 104 codes). When the decoder locks on an alias,
+ * remap to the preferred (normal) label for the orbit.
+ *
+ * Table: preferred_code_index[i] = index of preferred code for code i's orbit.
+ * Built at init time by checking codeword rotations. */
+static int g_orbit_preferred[PLCODE_DCS_NUM_CODES];
+static int g_orbit_initialized;
+
+static void init_orbit_table(void)
+{
+    if (g_orbit_initialized) return;
+
+    /* Default: each code is its own preferred */
+    for (int i = 0; i < PLCODE_DCS_NUM_CODES; i++)
+        g_orbit_preferred[i] = i;
+
+    /* For each pair: check if any rotation of code i's codeword equals
+     * code j's complement (inverted alias). If so, prefer the lower index. */
+    for (int i = 0; i < PLCODE_DCS_NUM_CODES; i++) {
+        uint32_t cw_i = plcode_dcs_codewords[i];
+        for (int j = i + 1; j < PLCODE_DCS_NUM_CODES; j++) {
+            if (g_orbit_preferred[j] != j) continue; /* already mapped */
+            uint32_t cw_j = plcode_dcs_codewords[j];
+            uint32_t comp_j = cw_j ^ 0x7FFFFF;
+
+            uint32_t rot = cw_i;
+            int found = 0;
+            for (int r = 0; r < 23 && !found; r++) {
+                if (rot == cw_j || rot == comp_j) found = 1;
+                uint32_t lsb = rot & 1;
+                rot = ((rot >> 1) | (lsb << 22)) & 0x7FFFFF;
+            }
+            if (!found) {
+                rot = cw_i ^ 0x7FFFFF;
+                for (int r = 0; r < 23 && !found; r++) {
+                    if (rot == cw_j || rot == comp_j) found = 1;
+                    uint32_t lsb = rot & 1;
+                    rot = ((rot >> 1) | (lsb << 22)) & 0x7FFFFF;
+                }
+            }
+            if (found) {
+                /* i and j are in the same orbit — prefer lower index (normal) */
+                g_orbit_preferred[j] = i;
+            }
+        }
+    }
+    g_orbit_initialized = 1;
+}
+
 /* Design 2nd-order Butterworth LPF coefficients (Q14) */
 static void design_butterworth_lpf(int rate, double cutoff, int32_t b[3], int32_t a[2])
 {
@@ -35,6 +87,7 @@ int plcode_dcs_dec_create(plcode_dcs_dec_t **ctx, int rate)
     if (!plcode_valid_rate(rate)) return PLCODE_ERR_RATE;
 
     plcode_tables_init();
+    init_orbit_table();
 
     c = (plcode_dcs_dec_t *)calloc(1, sizeof(*c));
     if (!c) return PLCODE_ERR_ALLOC;
@@ -237,11 +290,14 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
     /* Update result */
     if (result) {
         if (ctx->confirmed) {
+            /* Remap through orbit table to preferred (canonical) code */
+            int pref = g_orbit_preferred[ctx->confirmed_code];
             result->detected = 1;
-            result->code_index = ctx->confirmed_code;
+            result->code_index = pref;
             result->code_number = (uint16_t)plcode_dcs_code_to_label(
-                                      plcode_dcs_codes[ctx->confirmed_code]);
-            result->inverted = ctx->confirmed_inv;
+                                      plcode_dcs_codes[pref]);
+            result->inverted = (pref != ctx->confirmed_code)
+                ? !ctx->confirmed_inv : ctx->confirmed_inv;
         } else {
             result->detected = 0;
             result->code_index = -1;
