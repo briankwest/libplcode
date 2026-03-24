@@ -122,9 +122,9 @@ static int extract_dcs_code(uint32_t sr, int *inv)
 {
     uint16_t data12, code9;
 
-    /* Try normal: TIA/EIA-603 marker at bit 9: b11-b10=00, b9=1 */
+    /* Try normal: marker at bits 11:9 = 100 */
     data12 = (uint16_t)(sr >> 11);
-    if ((data12 & 0xE00) == 0x200) {
+    if ((data12 & 0xE00) == 0x800) {
         code9 = data12 & 0x1FF;
         int idx = dcs_code_index_internal(code9);
         if (idx >= 0) {
@@ -136,7 +136,7 @@ static int extract_dcs_code(uint32_t sr, int *inv)
     /* Try inverted: complement then check */
     uint32_t comp = sr ^ 0x7FFFFF;
     data12 = (uint16_t)(comp >> 11);
-    if ((data12 & 0xE00) == 0x200) {
+    if ((data12 & 0xE00) == 0x800) {
         code9 = data12 & 0x1FF;
         int idx = dcs_code_index_internal(code9);
         if (idx >= 0) {
@@ -149,23 +149,20 @@ static int extract_dcs_code(uint32_t sr, int *inv)
 }
 
 /* Check shift register for a valid DCS codeword.
- * Skips the initial 22 bits while the shift register fills.
- * After filling, uses alignment tracking: once a match is found,
- * only checks every 23 bits to avoid spurious rotated matches. */
+ * Checks at aligned positions only (every 23 bits after first match).
+ * Requires 3 consecutive aligned matches of the same code to confirm.
+ * On aligned miss, falls back to free-running check to re-acquire. */
 static void check_codeword(plcode_dcs_dec_t *c)
 {
-    /* Don't check until the shift register is fully filled */
     if (c->total_bits < PLCODE_DCS_CODEWORD_BITS)
         return;
 
-    /* In tracking mode, only check at aligned positions */
     if (c->bits_since_match >= 0) {
         c->bits_since_match++;
         if (c->bits_since_match < PLCODE_DCS_CODEWORD_BITS)
             return;
     }
 
-    /* Check for valid codeword */
     uint32_t sr = c->shift_reg & 0x7FFFFF;
     int found_inv = 0;
     int found_code = extract_dcs_code(sr, &found_inv);
@@ -174,10 +171,8 @@ static void check_codeword(plcode_dcs_dec_t *c)
         if (c->bits_since_match == PLCODE_DCS_CODEWORD_BITS
             && found_code == c->match_code
             && found_inv == c->match_inv) {
-            /* Aligned match — same code at expected position */
             c->match_count++;
         } else {
-            /* New code or first acquisition */
             c->match_code = found_code;
             c->match_inv = found_inv;
             c->match_count = 1;
@@ -190,7 +185,6 @@ static void check_codeword(plcode_dcs_dec_t *c)
             c->confirmed_inv = found_inv;
         }
     } else if (c->bits_since_match >= PLCODE_DCS_CODEWORD_BITS) {
-        /* Expected aligned check failed — lost lock, re-acquire */
         c->match_code = -1;
         c->match_count = 0;
         c->bits_since_match = -1;
@@ -213,16 +207,15 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
 
         /* Edge detection for PLL sync */
         if (bit != ctx->prev_input) {
-            /* Transition detected — nudge PLL phase toward center
-             * PLL bandwidth ~5% of bit rate */
+            /* Transition detected — edges should occur at phase ~0.
+             * Nudge PLL phase toward zero-crossing point.
+             * Use proportional correction (~25% of error) for fast lock. */
             int32_t phase_err;
-            if (ctx->pll_phase < 0x80000000u) {
+            if (ctx->pll_phase < 0x80000000u)
                 phase_err = (int32_t)ctx->pll_phase;
-            } else {
+            else
                 phase_err = (int32_t)(ctx->pll_phase - 0xFFFFFFFFu - 1);
-            }
-            /* Adjust phase: move ~5% toward zero-crossing point */
-            ctx->pll_phase -= (uint32_t)(phase_err >> 4); /* ~6% bandwidth */
+            ctx->pll_phase -= (uint32_t)(phase_err >> 2); /* 25% correction */
         }
         ctx->prev_input = bit;
 

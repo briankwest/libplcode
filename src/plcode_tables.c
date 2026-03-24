@@ -84,8 +84,7 @@ static void plcode_init_dcs_codewords(void)
             continue;
         }
         uint16_t code9 = plcode_dcs_codes[i] & 0x1FF;
-        /* TIA/EIA-603: b0-b8=code, b9=1(marker), b10-b11=0 */
-        uint16_t data12 = (uint16_t)(0x200u | code9);
+        uint16_t data12 = (uint16_t)(0x800u | code9);
         plcode_dcs_codewords[i] = plcode_golay_encode(data12);
     }
 }
