@@ -30,7 +30,7 @@ int plcode_dcs_enc_create(plcode_dcs_enc_t **ctx,
     c->amplitude = amplitude;
     c->inverted = inverted;
 
-    /* Get precomputed Golay codeword */
+    /* Get precomputed Golay codeword (TIA/EIA-603: marker at bit 9) */
     c->codeword = plcode_dcs_codewords[code_idx];
     if (inverted) {
         c->codeword ^= 0x7FFFFF; /* Invert all 23 bits */
@@ -61,7 +61,7 @@ void plcode_dcs_enc_process(plcode_dcs_enc_t *ctx, int16_t *buf, size_t n)
     if (!ctx || !buf) return;
 
     for (i = 0; i < n; i++) {
-        /* Get current bit value */
+        /* Get current bit value — LSB first per TIA/EIA-603 */
         int bit = (ctx->codeword >> ctx->bit_index) & 1;
 
         /* NRZ: +amplitude for 1, -amplitude for 0 */

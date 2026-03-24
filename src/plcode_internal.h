@@ -48,7 +48,7 @@ static inline int plcode_valid_rate(int rate)
 }
 
 /* ── Golay polynomial ── */
-#define PLCODE_GOLAY_POLY 0xC75u  /* x^11+x^10+x^6+x^5+x^4+x^2+1 */
+#define PLCODE_GOLAY_POLY 0xAE3u  /* x^11+x^9+x^7+x^6+x^5+x+1 (TIA/EIA-603) */
 
 /* ── DCS constants ── */
 #define PLCODE_DCS_BITRATE     134.4   /* bits per second */

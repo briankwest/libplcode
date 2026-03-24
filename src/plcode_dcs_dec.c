@@ -122,9 +122,9 @@ static int extract_dcs_code(uint32_t sr, int *inv)
 {
     uint16_t data12, code9;
 
-    /* Try normal: data word should start with '100' */
+    /* Try normal: TIA/EIA-603 marker at bit 9: b11-b10=00, b9=1 */
     data12 = (uint16_t)(sr >> 11);
-    if ((data12 & 0xE00) == 0x800) {
+    if ((data12 & 0xE00) == 0x200) {
         code9 = data12 & 0x1FF;
         int idx = dcs_code_index_internal(code9);
         if (idx >= 0) {
@@ -136,7 +136,7 @@ static int extract_dcs_code(uint32_t sr, int *inv)
     /* Try inverted: complement then check */
     uint32_t comp = sr ^ 0x7FFFFF;
     data12 = (uint16_t)(comp >> 11);
-    if ((data12 & 0xE00) == 0x800) {
+    if ((data12 & 0xE00) == 0x200) {
         code9 = data12 & 0x1FF;
         int idx = dcs_code_index_internal(code9);
         if (idx >= 0) {
@@ -232,7 +232,7 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
 
         /* Sample bit at midpoint of bit period */
         if ((prev_phase < 0x80000000u) && (ctx->pll_phase >= 0x80000000u)) {
-            /* Shift in new bit (right-shift, MSB insert — matches encoder LSB-first order) */
+            /* Shift in new bit (right-shift, MSB insert — LSB first per TIA/EIA-603) */
             ctx->shift_reg = ((ctx->shift_reg >> 1) | ((uint32_t)bit << 22)) & 0x7FFFFF;
             ctx->total_bits++;
 
