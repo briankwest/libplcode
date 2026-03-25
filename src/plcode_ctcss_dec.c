@@ -29,7 +29,8 @@ int plcode_ctcss_dec_create(plcode_ctcss_dec_t **ctx, int rate)
     if (!c) return PLCODE_ERR_ALLOC;
 
     c->rate = rate;
-    c->block_size = rate;  /* 1 second window */
+    c->block_size = rate / 2;  /* 500ms window — 2 Hz resolution,
+                                * 1s total detection (2 × 500ms confirm) */
     c->sample_count = 0;
     c->prev_tone = -1;
     c->confirm_count = 0;
@@ -134,7 +135,9 @@ void plcode_ctcss_dec_process(plcode_ctcss_dec_t *ctx,
     if (!ctx || !buf) return;
 
     for (i = 0; i < n; i++) {
-        int32_t sample = (int32_t)buf[i];
+        /* Scale input down for large block sizes to prevent overflow in
+         * magnitude computation (s1^2 terms) */
+        int32_t sample = (int32_t)buf[i] >> (ctx->rate > 16000 ? 2 : 0);
 
         /* Update all Goertzel filters (Q28 coeff, int64 accumulators) */
         for (t = 0; t < PLCODE_CTCSS_NUM_TONES; t++) {

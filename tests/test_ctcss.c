@@ -85,7 +85,7 @@ void test_ctcss_all_tones_all_rates(void)
                 continue;
             }
 
-            int total_samples = rate * 3;
+            int total_samples = rate * 5;  /* 5s for reliable detect at all rates */
             int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
             if (!buf) {
                 plcode_ctcss_enc_destroy(enc);
