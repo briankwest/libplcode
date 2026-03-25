@@ -9,28 +9,30 @@
 /* DCS orbit canonicalization.
  * The Golay(23,12) code is cyclic — rotations of a codeword are valid
  * codewords for other codes. Each code pairs with an inverted alias
- * (53 orbits from 104 codes). When the decoder locks on an alias,
- * remap to the preferred (normal) label for the orbit.
+ * (53 orbits from 104 codes).
  *
- * Table: preferred_code_index[i] = index of preferred code for code i's orbit.
- * Built at init time by checking codeword rotations. */
-static int g_orbit_preferred[PLCODE_DCS_NUM_CODES];
+ * Orbit pair table: g_orbit_pair[i] = index of the OTHER code in i's orbit.
+ * If code i has no pair, g_orbit_pair[i] = i.
+ *
+ * When the decoder detects a code through the complement check (inverted=1),
+ * the actual transmitted code is the orbit pair. Remap accordingly. */
+static int g_orbit_pair[PLCODE_DCS_NUM_CODES];
 static int g_orbit_initialized;
 
 static void init_orbit_table(void)
 {
     if (g_orbit_initialized) return;
 
-    /* Default: each code is its own preferred */
+    /* Default: each code is its own pair (no orbit partner) */
     for (int i = 0; i < PLCODE_DCS_NUM_CODES; i++)
-        g_orbit_preferred[i] = i;
+        g_orbit_pair[i] = i;
 
-    /* For each pair: check if any rotation of code i's codeword equals
-     * code j's complement (inverted alias). If so, prefer the lower index. */
+    /* Find orbit pairs: if any rotation of code i's codeword equals
+     * code j or its complement, they're in the same orbit. */
     for (int i = 0; i < PLCODE_DCS_NUM_CODES; i++) {
         uint32_t cw_i = plcode_dcs_codewords[i];
         for (int j = i + 1; j < PLCODE_DCS_NUM_CODES; j++) {
-            if (g_orbit_preferred[j] != j) continue; /* already mapped */
+            if (g_orbit_pair[j] != j) continue; /* already paired */
             uint32_t cw_j = plcode_dcs_codewords[j];
             uint32_t comp_j = cw_j ^ 0x7FFFFF;
 
@@ -50,8 +52,9 @@ static void init_orbit_table(void)
                 }
             }
             if (found) {
-                /* i and j are in the same orbit — prefer lower index (normal) */
-                g_orbit_preferred[j] = i;
+                /* Bidirectional pair */
+                g_orbit_pair[i] = j;
+                g_orbit_pair[j] = i;
             }
         }
     }
@@ -309,14 +312,20 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
     /* Update result */
     if (result) {
         if (ctx->confirmed) {
-            /* Remap through orbit table to preferred (canonical) code */
-            int pref = g_orbit_preferred[ctx->confirmed_code];
+            /* When detected via complement check (inverted=1), the PLL
+             * locked on a rotated codeword that matches the orbit pair.
+             * Map back to the actual transmitted code via orbit table. */
+            int code_idx = ctx->confirmed_code;
+            int inv = ctx->confirmed_inv;
+            if (inv && g_orbit_pair[code_idx] != code_idx) {
+                code_idx = g_orbit_pair[code_idx];
+                inv = 0;
+            }
             result->detected = 1;
-            result->code_index = pref;
+            result->code_index = code_idx;
             result->code_number = (uint16_t)plcode_dcs_code_to_label(
-                                      plcode_dcs_codes[pref]);
-            result->inverted = (pref != ctx->confirmed_code)
-                ? !ctx->confirmed_inv : ctx->confirmed_inv;
+                                      plcode_dcs_codes[code_idx]);
+            result->inverted = inv;
         } else {
             result->detected = 0;
             result->code_index = -1;

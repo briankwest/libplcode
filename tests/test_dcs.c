@@ -85,11 +85,13 @@ void test_dcs_inverted(void)
     memset(&result, 0, sizeof(result));
     plcode_dcs_dec_process(dec, buf, (size_t)total_samples, &result);
 
-    if (result.detected && result.code_number == code && result.inverted) {
+    /* D023I and D047N are the same physical signal (orbit pair).
+     * Complement detections map to the orbit pair's normal form. */
+    if (result.detected && result.code_number == 47 && !result.inverted) {
         PASS();
     } else {
         char msg[128];
-        snprintf(msg, sizeof(msg), "detected=%d code=%03d inv=%d (expected 023 inverted)",
+        snprintf(msg, sizeof(msg), "detected=%d code=%03d inv=%d (expected 047 normal via orbit pair)",
                  result.detected, result.code_number, result.inverted);
         FAIL(msg);
     }
