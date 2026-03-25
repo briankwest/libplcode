@@ -100,6 +100,11 @@ struct plcode_dcs_enc {
 struct plcode_dcs_dec {
     int      rate;
 
+    /* DC blocker (1st-order HP at ~5 Hz, removes FM demod offset) */
+    int32_t  dc_x1;          /* Previous input sample */
+    int32_t  dc_y1;          /* Previous output sample (Q15) */
+    int32_t  dc_alpha;       /* Pole coefficient, Q15 (~0.996 at 8kHz) */
+
     /* 2nd-order Butterworth LPF (Q14 coefficients) */
     int32_t  lpf_b[3];
     int32_t  lpf_a[2];       /* a1, a2 (negated for direct form) */

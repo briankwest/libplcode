@@ -94,6 +94,18 @@ int plcode_dcs_dec_create(plcode_dcs_dec_t **ctx, int rate)
 
     c->rate = rate;
 
+    /* DC blocker: y[n] = x[n] - x[n-1] + alpha * y[n-1]
+     * alpha = 1 - 2*pi*fc/fs ≈ 0.996 at 8kHz (fc ~5 Hz)
+     * Removes FM demod DC offset without affecting 134.4 Hz DCS signal */
+    {
+        double fc_dc = 5.0; /* Hz */
+        double alpha = 1.0 - 2.0 * M_PI * fc_dc / (double)rate;
+        if (alpha < 0.9) alpha = 0.9;  /* safety clamp */
+        c->dc_alpha = (int32_t)(alpha * 32768.0 + 0.5);
+    }
+    c->dc_x1 = 0;
+    c->dc_y1 = 0;
+
     /* Design 300 Hz Butterworth LPF */
     design_butterworth_lpf(rate, 300.0, c->lpf_b, c->lpf_a);
 
@@ -252,8 +264,15 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
     if (!ctx || !buf) return;
 
     for (i = 0; i < n; i++) {
-        /* Low-pass filter */
-        int16_t filtered = apply_lpf(ctx, buf[i]);
+        /* DC blocker: y = x - x_prev + alpha * y_prev (Q15) */
+        int32_t dc_in = (int32_t)buf[i];
+        int32_t dc_out = (dc_in - ctx->dc_x1) +
+                          (int32_t)(((int64_t)ctx->dc_alpha * ctx->dc_y1) >> 15);
+        ctx->dc_x1 = dc_in;
+        ctx->dc_y1 = dc_out;
+
+        /* Low-pass filter (on DC-removed signal) */
+        int16_t filtered = apply_lpf(ctx, plcode_clamp16(dc_out));
 
         /* Hard decision */
         int bit = comparator(ctx, filtered);
@@ -310,6 +329,8 @@ void plcode_dcs_dec_process(plcode_dcs_dec_t *ctx,
 void plcode_dcs_dec_reset(plcode_dcs_dec_t *ctx)
 {
     if (!ctx) return;
+    ctx->dc_x1 = 0;
+    ctx->dc_y1 = 0;
     ctx->lpf_x[0] = ctx->lpf_x[1] = 0;
     ctx->lpf_y[0] = ctx->lpf_y[1] = 0;
     ctx->last_bit = 0;
