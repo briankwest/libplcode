@@ -64,7 +64,8 @@ struct plcode_ctcss_enc {
 /* ── CTCSS Decoder context ── */
 struct plcode_ctcss_dec {
     int      rate;
-    int      block_size;     /* = sample_rate (1 second window) */
+    int      block_size;     /* = rate * 3/10 (300ms window) */
+    int      half_block;     /* block_size / 2, for midpoint check */
     int      sample_count;   /* Samples accumulated in current block */
 
     /* Goertzel state for each tone (int64 to avoid overflow at high rates) */
@@ -75,6 +76,7 @@ struct plcode_ctcss_dec {
     /* Detection state */
     int      prev_tone;      /* Previous detected tone index (-1 = none) */
     int      confirm_count;  /* Consecutive detections of same tone */
+    int      mid_tone;       /* Best tone at midpoint (-1 = none) */
 };
 
 /* ── DCS Encoder context ── */

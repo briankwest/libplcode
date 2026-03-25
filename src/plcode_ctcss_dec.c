@@ -29,11 +29,12 @@ int plcode_ctcss_dec_create(plcode_ctcss_dec_t **ctx, int rate)
     if (!c) return PLCODE_ERR_ALLOC;
 
     c->rate = rate;
-    c->block_size = (rate * 3) / 10;  /* 300ms window — 3.3 Hz resolution,
-                                      * 600ms total detection (2 × 300ms confirm) */
+    c->block_size = (rate * 3) / 10;  /* 300ms window — 3.3 Hz resolution */
+    c->half_block = c->block_size / 2; /* 150ms midpoint for early confirm */
     c->sample_count = 0;
     c->prev_tone = -1;
     c->confirm_count = 0;
+    c->mid_tone = -1;
 
     for (i = 0; i < PLCODE_CTCSS_NUM_TONES; i++) {
         double freq = (double)plcode_ctcss_tones[i] / 10.0;
@@ -56,6 +57,28 @@ static int64_t goertzel_mag2(int64_t s1, int64_t s2, int32_t coeff)
     int64_t b = s2s * s2s;
     int64_t c = (s1s * s2s >> 8) * (int64_t)coeff >> 20;
     return a + b - c;
+}
+
+/* Compute midpoint snapshot: find dominant tone at half-block for early confirm.
+ * Only needs the winner — frequency resolution at half-block is too coarse for
+ * SNR discrimination, but the winner still matches the true tone for pure input. */
+static void check_midpoint(plcode_ctcss_dec_t *c)
+{
+    int i;
+    int64_t max_mag = 0;
+    int max_idx = -1;
+    int64_t threshold = (int64_t)c->half_block * c->half_block / 16;
+
+    for (i = 0; i < PLCODE_CTCSS_NUM_TONES; i++) {
+        int64_t mag = goertzel_mag2(c->s1[i], c->s2[i], c->coeff[i]);
+        if (mag < 0) mag = 0;
+        if (mag > max_mag) {
+            max_mag = mag;
+            max_idx = i;
+        }
+    }
+
+    c->mid_tone = (max_idx >= 0 && max_mag > threshold) ? max_idx : -1;
 }
 
 static void process_block(plcode_ctcss_dec_t *c, plcode_ctcss_result_t *result)
@@ -94,13 +117,20 @@ static void process_block(plcode_ctcss_dec_t *c, plcode_ctcss_result_t *result)
         }
     }
 
-    /* Hysteresis: require 2 consecutive detections */
+    /* Hysteresis with early confirm:
+     * - Same tone as previous block: increment count (normal 2-block path)
+     * - New tone but matches midpoint winner: early confirm in 1 block
+     *   (tone was stable across both halves of the window)
+     * - Otherwise: start new count, wait for next block */
     if (detected_idx >= 0 && detected_idx == c->prev_tone) {
         c->confirm_count++;
+    } else if (detected_idx >= 0 && detected_idx == c->mid_tone) {
+        c->confirm_count = 2;  /* Early confirm: midpoint + full window agree */
     } else {
         c->confirm_count = (detected_idx >= 0) ? 1 : 0;
     }
     c->prev_tone = detected_idx;
+    c->mid_tone = -1;  /* Reset for next block */
 
     /* Update result */
     if (result) {
@@ -149,6 +179,11 @@ void plcode_ctcss_dec_process(plcode_ctcss_dec_t *ctx,
 
         ctx->sample_count++;
 
+        /* Midpoint snapshot for early confirm */
+        if (ctx->sample_count == ctx->half_block) {
+            check_midpoint(ctx);
+        }
+
         if (ctx->sample_count >= ctx->block_size) {
             process_block(ctx, result);
         }
@@ -166,6 +201,7 @@ void plcode_ctcss_dec_reset(plcode_ctcss_dec_t *ctx)
     ctx->sample_count = 0;
     ctx->prev_tone = -1;
     ctx->confirm_count = 0;
+    ctx->mid_tone = -1;
 }
 
 void plcode_ctcss_dec_destroy(plcode_ctcss_dec_t *ctx)

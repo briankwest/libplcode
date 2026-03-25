@@ -223,6 +223,136 @@ adj_cleanup:
     plcode_ctcss_dec_destroy(dec);
 }
 
+void test_ctcss_fast_detect(void)
+{
+    int rate = 8000;
+    uint16_t freq = 1000; /* 100.0 Hz — well separated from neighbors */
+    int total, chunk, detected_at, offset, n, ms;
+    int16_t *buf;
+    plcode_ctcss_enc_t *enc = NULL;
+    plcode_ctcss_dec_t *dec = NULL;
+    plcode_ctcss_result_t result;
+
+    TEST("fast detect 100.0 Hz (<= 350ms @ 8kHz)");
+
+    if (plcode_ctcss_enc_create(&enc, rate, freq, 3000) != PLCODE_OK) { FAIL("enc create"); return; }
+    if (plcode_ctcss_dec_create(&dec, rate) != PLCODE_OK) { FAIL("dec create"); plcode_ctcss_enc_destroy(enc); return; }
+
+    total = rate * 2; /* 2s of tone */
+    buf = (int16_t *)calloc((size_t)total, sizeof(int16_t));
+    if (!buf) { FAIL("alloc"); goto fd_cleanup; }
+
+    plcode_ctcss_enc_process(enc, buf, (size_t)total);
+
+    /* Feed in 10ms chunks, find first detection */
+    chunk = rate / 100; /* 80 samples = 10ms */
+    detected_at = -1;
+
+    for (offset = 0; offset < total; offset += chunk) {
+        n = (offset + chunk <= total) ? chunk : total - offset;
+        memset(&result, 0, sizeof(result));
+        plcode_ctcss_dec_process(dec, buf + offset, (size_t)n, &result);
+
+        if (result.detected && result.tone_freq_x10 == freq) {
+            detected_at = offset + n;
+            break;
+        }
+    }
+
+    if (detected_at < 0) {
+        FAIL("not detected within 2 seconds");
+    } else {
+        ms = (detected_at * 1000) / rate;
+        if (ms <= 350) {
+            PASS();
+        } else {
+            char msg[80];
+            snprintf(msg, sizeof(msg), "detected at %d ms (want <= 350)", ms);
+            FAIL(msg);
+        }
+    }
+
+fd_cleanup:
+    free(buf);
+    plcode_ctcss_enc_destroy(enc);
+    plcode_ctcss_dec_destroy(dec);
+}
+
+void test_ctcss_fast_detect_all_rates(void)
+{
+    int r;
+    uint16_t freq = 1318; /* 131.8 Hz — mid-range, common GMRS tone */
+    int total_tests = 0, passed_tests = 0;
+    char testname[80];
+
+    for (r = 0; r < NUM_RATES; r++) {
+        int rate = sample_rates[r];
+        int total, chunk, detected_at, offset, n, ms;
+        int16_t *buf;
+        plcode_ctcss_enc_t *enc = NULL;
+        plcode_ctcss_dec_t *dec = NULL;
+        plcode_ctcss_result_t result;
+
+        total_tests++;
+
+        if (plcode_ctcss_enc_create(&enc, rate, freq, 3000) != PLCODE_OK) continue;
+        if (plcode_ctcss_dec_create(&dec, rate) != PLCODE_OK) {
+            plcode_ctcss_enc_destroy(enc);
+            continue;
+        }
+
+        total = rate * 2;
+        buf = (int16_t *)calloc((size_t)total, sizeof(int16_t));
+        if (!buf) {
+            plcode_ctcss_enc_destroy(enc);
+            plcode_ctcss_dec_destroy(dec);
+            continue;
+        }
+
+        plcode_ctcss_enc_process(enc, buf, (size_t)total);
+
+        chunk = rate / 100;
+        detected_at = -1;
+
+        for (offset = 0; offset < total; offset += chunk) {
+            n = (offset + chunk <= total) ? chunk : total - offset;
+            memset(&result, 0, sizeof(result));
+            plcode_ctcss_dec_process(dec, buf + offset, (size_t)n, &result);
+
+            if (result.detected && result.tone_freq_x10 == freq) {
+                detected_at = offset + n;
+                break;
+            }
+        }
+
+        if (detected_at >= 0) {
+            ms = (detected_at * 1000) / rate;
+            if (ms <= 350) {
+                passed_tests++;
+            } else {
+                printf("\n    FAIL: 131.8 Hz @ %d Hz detected at %d ms", rate, ms);
+            }
+        } else {
+            printf("\n    FAIL: 131.8 Hz @ %d Hz not detected", rate);
+        }
+
+        free(buf);
+        plcode_ctcss_enc_destroy(enc);
+        plcode_ctcss_dec_destroy(dec);
+    }
+
+    snprintf(testname, sizeof(testname), "fast detect 131.8 Hz all rates (%d rates)", total_tests);
+    TEST(testname);
+    if (passed_tests == total_tests) {
+        PASS();
+    } else {
+        char msg[80];
+        snprintf(msg, sizeof(msg), "%d/%d passed", passed_tests, total_tests);
+        printf("\n");
+        FAIL(msg);
+    }
+}
+
 int test_ctcss(void)
 {
     printf("CTCSS tests:\n");
@@ -232,6 +362,8 @@ int test_ctcss(void)
     test_ctcss_silence_rejection();
     test_ctcss_noise_rejection();
     test_ctcss_adjacent_rejection();
+    test_ctcss_fast_detect();
+    test_ctcss_fast_detect_all_rates();
 
     printf("  CTCSS: %d/%d passed\n\n", tests_passed, tests_run);
     return tests_passed == tests_run ? 0 : 1;
