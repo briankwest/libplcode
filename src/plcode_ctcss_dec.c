@@ -29,8 +29,8 @@ int plcode_ctcss_dec_create(plcode_ctcss_dec_t **ctx, int rate)
     if (!c) return PLCODE_ERR_ALLOC;
 
     c->rate = rate;
-    c->block_size = rate / 2;  /* 500ms window — 2 Hz resolution,
-                                * 1s total detection (2 × 500ms confirm) */
+    c->block_size = (rate * 3) / 10;  /* 300ms window — 3.3 Hz resolution,
+                                      * 600ms total detection (2 × 300ms confirm) */
     c->sample_count = 0;
     c->prev_tone = -1;
     c->confirm_count = 0;
