@@ -1,0 +1,223 @@
+#include "../include/plcode.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static int tests_run = 0;
+static int tests_passed = 0;
+
+#define TEST(name) do { \
+    tests_run++; \
+    printf("  %-50s ", name); \
+} while(0)
+
+#define PASS() do { tests_passed++; printf("PASS\n"); } while(0)
+#define FAIL(msg) do { printf("FAIL: %s\n", msg); } while(0)
+
+static const int sample_rates[] = { 8000, 16000, 32000, 48000 };
+#define NUM_RATES 4
+
+static int mcw_roundtrip(int rate, const char *message, int freq, int wpm)
+{
+    plcode_mcw_enc_t *enc = NULL;
+    plcode_mcw_dec_t *dec = NULL;
+    int16_t *buf;
+    const char *decoded;
+    int total_samples, ok;
+
+    if (plcode_mcw_enc_create(&enc, rate, message, freq, wpm, 3000) != PLCODE_OK)
+        return 0;
+    if (plcode_mcw_dec_create(&dec, rate, freq, wpm) != PLCODE_OK) {
+        plcode_mcw_enc_destroy(enc);
+        return 0;
+    }
+
+    total_samples = rate * 5;
+    buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) {
+        plcode_mcw_enc_destroy(enc);
+        plcode_mcw_dec_destroy(dec);
+        return 0;
+    }
+
+    plcode_mcw_enc_process(enc, buf, (size_t)total_samples);
+
+    plcode_cwid_result_t result;
+    memset(&result, 0, sizeof(result));
+    plcode_mcw_dec_process(dec, buf, (size_t)total_samples, &result);
+
+    decoded = plcode_mcw_dec_message(dec);
+    ok = (strcmp(decoded, message) == 0);
+
+    free(buf);
+    plcode_mcw_enc_destroy(enc);
+    plcode_mcw_dec_destroy(dec);
+
+    return ok;
+}
+
+void test_mcw_single_char(void)
+{
+    TEST("MCW encode/decode single char 'A' @ 8000 Hz");
+    if (mcw_roundtrip(8000, "A", 800, 20)) {
+        PASS();
+    } else {
+        FAIL("decoded message did not match");
+    }
+}
+
+void test_mcw_callsign(void)
+{
+    TEST("MCW encode/decode callsign 'W1AW' @ 8000 Hz");
+    if (mcw_roundtrip(8000, "W1AW", 800, 20)) {
+        PASS();
+    } else {
+        FAIL("decoded message did not match");
+    }
+}
+
+void test_mcw_all_characters(void)
+{
+    const char *all_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/";
+    int len = (int)strlen(all_chars);
+    int i, total = 0, passed_count = 0;
+    char testname[80];
+
+    for (i = 0; i < len; i++) {
+        char msg[2];
+        msg[0] = all_chars[i];
+        msg[1] = '\0';
+        total++;
+        if (mcw_roundtrip(8000, msg, 800, 20)) {
+            passed_count++;
+        } else {
+            printf("\n    FAIL: char '%c'", all_chars[i]);
+        }
+    }
+
+    snprintf(testname, sizeof(testname), "MCW all chars individually (%d chars)", total);
+    TEST(testname);
+    if (passed_count == total) {
+        PASS();
+    } else {
+        char msg[80];
+        snprintf(msg, sizeof(msg), "%d/%d passed", passed_count, total);
+        printf("\n");
+        FAIL(msg);
+    }
+}
+
+void test_mcw_silence_rejection(void)
+{
+    int rate = 8000;
+    TEST("MCW no false detection on silence");
+
+    plcode_mcw_dec_t *dec = NULL;
+    if (plcode_mcw_dec_create(&dec, rate, 800, 20) != PLCODE_OK) {
+        FAIL("create failed");
+        return;
+    }
+
+    int total_samples = rate * 3;
+    int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) { FAIL("alloc"); plcode_mcw_dec_destroy(dec); return; }
+
+    plcode_cwid_result_t result;
+    memset(&result, 0, sizeof(result));
+    plcode_mcw_dec_process(dec, buf, (size_t)total_samples, &result);
+
+    const char *msg = plcode_mcw_dec_message(dec);
+    if (strlen(msg) == 0) {
+        PASS();
+    } else {
+        FAIL("false detection on silence");
+    }
+
+    free(buf);
+    plcode_mcw_dec_destroy(dec);
+}
+
+void test_mcw_multi_rate(void)
+{
+    int r;
+    int total = 0, passed_count = 0;
+    char testname[80];
+
+    for (r = 0; r < NUM_RATES; r++) {
+        total++;
+        if (mcw_roundtrip(sample_rates[r], "CQ", 800, 20)) {
+            passed_count++;
+        } else {
+            printf("\n    FAIL: 'CQ' @ %d Hz", sample_rates[r]);
+        }
+    }
+
+    snprintf(testname, sizeof(testname), "MCW 'CQ' x all sample rates (%d)", total);
+    TEST(testname);
+    if (passed_count == total) {
+        PASS();
+    } else {
+        char msg[80];
+        snprintf(msg, sizeof(msg), "%d/%d passed", passed_count, total);
+        printf("\n");
+        FAIL(msg);
+    }
+}
+
+void test_mcw_cross_decode(void)
+{
+    TEST("MCW encoder -> CW decoder cross-decode");
+
+    int rate = 8000;
+    plcode_mcw_enc_t *enc = NULL;
+    plcode_cwid_dec_t *dec = NULL;
+    int ok = 0;
+
+    if (plcode_mcw_enc_create(&enc, rate, "W1AW", 800, 20, 3000) != PLCODE_OK) {
+        FAIL("encoder create failed");
+        return;
+    }
+    if (plcode_cwid_dec_create(&dec, rate, 800, 20) != PLCODE_OK) {
+        plcode_mcw_enc_destroy(enc);
+        FAIL("decoder create failed");
+        return;
+    }
+
+    int total_samples = rate * 5;
+    int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) {
+        plcode_mcw_enc_destroy(enc);
+        plcode_cwid_dec_destroy(dec);
+        FAIL("alloc");
+        return;
+    }
+
+    plcode_mcw_enc_process(enc, buf, (size_t)total_samples);
+
+    plcode_cwid_result_t result;
+    memset(&result, 0, sizeof(result));
+    plcode_cwid_dec_process(dec, buf, (size_t)total_samples, &result);
+
+    ok = (strcmp(plcode_cwid_dec_message(dec), "W1AW") == 0);
+
+    free(buf);
+    plcode_mcw_enc_destroy(enc);
+    plcode_cwid_dec_destroy(dec);
+
+    if (ok) { PASS(); } else { FAIL("CW decoder could not decode MCW"); }
+}
+
+int test_mcw(void)
+{
+    printf("MCW tests:\n");
+
+    test_mcw_single_char();
+    test_mcw_callsign();
+    test_mcw_all_characters();
+    test_mcw_silence_rejection();
+    test_mcw_multi_rate();
+    test_mcw_cross_decode();
+
+    printf("  MCW: %d/%d passed\n\n", tests_passed, tests_run);
+    return tests_passed == tests_run ? 0 : 1;
+}

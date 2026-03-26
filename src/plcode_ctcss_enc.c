@@ -28,6 +28,8 @@ int plcode_ctcss_enc_create(plcode_ctcss_enc_t **ctx,
     c->phase_inc = (uint32_t)(freq_hz / (double)rate * 4294967296.0 + 0.5);
     c->phase = 0;
     c->amplitude = amplitude;
+    c->rate = rate;
+    c->state = 0; /* normal */
 
     *ctx = c;
     return PLCODE_OK;
@@ -39,10 +41,47 @@ void plcode_ctcss_enc_process(plcode_ctcss_enc_t *ctx, int16_t *buf, size_t n)
     if (!ctx || !buf) return;
 
     for (i = 0; i < n; i++) {
-        int16_t tone = plcode_scale(plcode_sine_lookup(ctx->phase), ctx->amplitude);
-        buf[i] = plcode_clamp16((int32_t)buf[i] + (int32_t)tone);
-        ctx->phase += ctx->phase_inc;
+        if (ctx->state == 2) break; /* stopped */
+
+        if (ctx->state == 1) {
+            /* Reverse burst — generate inverted tone */
+            int16_t tone = plcode_scale(plcode_sine_lookup(ctx->phase),
+                                         ctx->amplitude);
+            buf[i] = plcode_clamp16((int32_t)buf[i] + (int32_t)tone);
+            ctx->phase += ctx->phase_inc;
+            ctx->burst_remaining--;
+            if (ctx->burst_remaining <= 0)
+                ctx->state = 2; /* stopped */
+        } else {
+            /* Normal tone generation */
+            int16_t tone = plcode_scale(plcode_sine_lookup(ctx->phase),
+                                         ctx->amplitude);
+            buf[i] = plcode_clamp16((int32_t)buf[i] + (int32_t)tone);
+            ctx->phase += ctx->phase_inc;
+        }
     }
+}
+
+void plcode_ctcss_enc_reverse_burst(plcode_ctcss_enc_t *ctx)
+{
+    if (!ctx) return;
+    /* Invert phase by 180 degrees */
+    ctx->phase += 0x80000000u;
+    ctx->state = 1;
+    /* 200ms burst duration */
+    ctx->burst_remaining = ctx->rate * 200 / 1000;
+}
+
+int plcode_ctcss_enc_stopped(plcode_ctcss_enc_t *ctx)
+{
+    if (!ctx) return 1;
+    return (ctx->state == 2) ? 1 : 0;
+}
+
+void plcode_ctcss_enc_resume(plcode_ctcss_enc_t *ctx)
+{
+    if (!ctx) return;
+    ctx->state = 0;
 }
 
 void plcode_ctcss_enc_destroy(plcode_ctcss_enc_t *ctx)

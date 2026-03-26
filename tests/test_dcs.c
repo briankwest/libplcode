@@ -248,6 +248,98 @@ void test_dcs_silence_rejection(void)
     plcode_dcs_dec_destroy(dec);
 }
 
+void test_dcs_turn_off(void)
+{
+    int rate = 8000;
+    uint16_t code = 23;
+
+    TEST("DCS turn-off stops encoder");
+
+    plcode_dcs_enc_t *enc = NULL;
+    if (plcode_dcs_enc_create(&enc, rate, code, 0, 3000) != PLCODE_OK) {
+        FAIL("create"); return;
+    }
+
+    int total_samples = rate * 3;
+    int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) { FAIL("alloc"); plcode_dcs_enc_destroy(enc); return; }
+
+    /* Generate 1 second of normal DCS */
+    plcode_dcs_enc_process(enc, buf, (size_t)rate);
+
+    if (plcode_dcs_enc_stopped(enc)) {
+        FAIL("stopped too early"); goto to_cleanup;
+    }
+
+    /* Trigger turn-off */
+    plcode_dcs_enc_turn_off(enc);
+
+    /* Process remaining — should stop after 3 codeword cycles */
+    plcode_dcs_enc_process(enc, buf + rate, (size_t)(total_samples - rate));
+
+    if (plcode_dcs_enc_stopped(enc)) {
+        PASS();
+    } else {
+        FAIL("encoder did not stop after turn-off");
+    }
+
+to_cleanup:
+    free(buf);
+    plcode_dcs_enc_destroy(enc);
+}
+
+void test_dcs_resume_after_turnoff(void)
+{
+    int rate = 8000;
+    uint16_t code = 23;
+
+    TEST("DCS resume after turn-off");
+
+    plcode_dcs_enc_t *enc = NULL;
+    plcode_dcs_dec_t *dec = NULL;
+
+    if (plcode_dcs_enc_create(&enc, rate, code, 0, 3000) != PLCODE_OK) {
+        FAIL("enc create"); return;
+    }
+
+    /* Normal → turn off → stopped → resume → verify decode */
+    int total_samples = rate * 2;
+    int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) { FAIL("alloc"); plcode_dcs_enc_destroy(enc); return; }
+
+    plcode_dcs_enc_process(enc, buf, (size_t)(rate / 2));
+    plcode_dcs_enc_turn_off(enc);
+    plcode_dcs_enc_process(enc, buf + rate / 2, (size_t)(rate));
+
+    if (!plcode_dcs_enc_stopped(enc)) {
+        FAIL("not stopped"); goto rt_cleanup;
+    }
+
+    plcode_dcs_enc_resume(enc);
+    memset(buf, 0, (size_t)total_samples * sizeof(int16_t));
+    plcode_dcs_enc_process(enc, buf, (size_t)total_samples);
+
+    /* Decode the resumed signal */
+    if (plcode_dcs_dec_create(&dec, rate) != PLCODE_OK) {
+        FAIL("dec create"); goto rt_cleanup;
+    }
+
+    {
+        plcode_dcs_result_t result;
+        memset(&result, 0, sizeof(result));
+        plcode_dcs_dec_process(dec, buf, (size_t)total_samples, &result);
+
+        if (result.detected) { PASS(); }
+        else { FAIL("not detected after resume"); }
+    }
+
+    plcode_dcs_dec_destroy(dec);
+
+rt_cleanup:
+    free(buf);
+    plcode_dcs_enc_destroy(enc);
+}
+
 int test_dcs(void)
 {
     printf("DCS tests:\n");
@@ -257,6 +349,8 @@ int test_dcs(void)
     test_dcs_all_codes_single_rate();
     test_dcs_multi_rate();
     test_dcs_silence_rejection();
+    test_dcs_turn_off();
+    test_dcs_resume_after_turnoff();
 
     printf("  DCS: %d/%d passed\n\n", tests_passed, tests_run);
     return tests_passed == tests_run ? 0 : 1;

@@ -224,3 +224,117 @@ char plcode_cwid_decode(const char *pattern)
     }
     return '\0';
 }
+
+int plcode_cwid_build_elements(const char *message, int8_t *elements, int max_elements)
+{
+    int i, msg_len, num;
+    int need_char_gap = 0, need_word_gap = 0;
+
+    msg_len = (int)strlen(message);
+    num = 0;
+
+    for (i = 0; i < msg_len; i++) {
+        char ch = message[i];
+        const char *pat;
+        int j;
+
+        if (ch == ' ') {
+            if (need_char_gap) {
+                need_word_gap = 1;
+                need_char_gap = 0;
+            }
+            continue;
+        }
+
+        pat = plcode_cwid_morse(ch);
+        if (!pat) continue;
+
+        if (need_word_gap) {
+            if (num < max_elements) elements[num++] = -7;
+            need_word_gap = 0;
+        } else if (need_char_gap) {
+            if (num < max_elements) elements[num++] = -3;
+        }
+        need_char_gap = 1;
+
+        for (j = 0; pat[j] != '\0'; j++) {
+            if (j > 0 && num < max_elements)
+                elements[num++] = -1;
+            if (num < max_elements)
+                elements[num++] = (int8_t)((pat[j] == '.') ? 1 : 3);
+        }
+    }
+
+    if (num < max_elements)
+        elements[num] = 0;
+    return num;
+}
+
+/* ── Two-Tone Paging frequencies (Quick Call II), tenths of Hz ── */
+const uint16_t plcode_twotone_freqs[PLCODE_TWOTONE_NUM_FREQS] = {
+    3305, 3490, 3685, 3890, 4108, 4337, 4579, 4835,
+    5105, 5390, 5691, 6009, 6341, 6693, 7065, 7468,
+    7885, 8325, 8790, 9281, 9799, 10347, 10924, 11534,
+    12180, 12858, 13586, 14334, 15135, 15980, 16872, 17818,
+    18820
+};
+
+uint16_t plcode_twotone_freq_x10(int index)
+{
+    if (index < 0 || index >= PLCODE_TWOTONE_NUM_FREQS)
+        return 0;
+    return plcode_twotone_freqs[index];
+}
+
+int plcode_twotone_freq_index(uint16_t freq_x10)
+{
+    int i;
+    for (i = 0; i < PLCODE_TWOTONE_NUM_FREQS; i++) {
+        if (plcode_twotone_freqs[i] == freq_x10)
+            return i;
+    }
+    return -1;
+}
+
+/* ── Five-Tone Selcall frequency tables (Hz) ── */
+/* Digits 0-9, R(repeat)=10, G(group)=11 */
+
+const uint16_t plcode_selcall_zvei1[PLCODE_SELCALL_NUM_TONES] = {
+    2400, 1060, 1160, 1270, 1400, 1530, 1670, 1830, 2000, 2200, 2800, 810
+};
+
+const uint16_t plcode_selcall_ccir[PLCODE_SELCALL_NUM_TONES] = {
+    1981, 1124, 1197, 1275, 1358, 1446, 1540, 1640, 1747, 1860, 2110, 930
+};
+
+const uint16_t plcode_selcall_eia[PLCODE_SELCALL_NUM_TONES] = {
+    600, 741, 882, 1023, 1164, 1305, 1446, 1587, 1728, 1869, 459, 1998
+};
+
+const uint16_t *plcode_selcall_table(plcode_selcall_std_t std)
+{
+    switch (std) {
+    case PLCODE_SELCALL_ZVEI1: return plcode_selcall_zvei1;
+    case PLCODE_SELCALL_CCIR:  return plcode_selcall_ccir;
+    case PLCODE_SELCALL_EIA:   return plcode_selcall_eia;
+    default: return NULL;
+    }
+}
+
+int plcode_selcall_tone_ms(plcode_selcall_std_t std)
+{
+    switch (std) {
+    case PLCODE_SELCALL_ZVEI1: return 70;
+    case PLCODE_SELCALL_CCIR:  return 100;
+    case PLCODE_SELCALL_EIA:   return 33;
+    default: return 0;
+    }
+}
+
+uint16_t plcode_selcall_freq(plcode_selcall_std_t standard, int digit)
+{
+    const uint16_t *table = plcode_selcall_table(standard);
+    if (!table || digit < 0 || digit >= PLCODE_SELCALL_NUM_TONES)
+        return 0;
+    return table[digit];
+}

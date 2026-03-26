@@ -59,6 +59,9 @@ struct plcode_ctcss_enc {
     uint32_t phase;          /* Phase accumulator */
     uint32_t phase_inc;      /* Phase increment per sample */
     int16_t  amplitude;      /* Peak amplitude */
+    int      rate;           /* Sample rate (needed for burst duration) */
+    int      state;          /* 0=normal, 1=reverse_burst, 2=stopped */
+    int      burst_remaining;/* Samples remaining in reverse burst */
 };
 
 /* ── CTCSS Decoder context ── */
@@ -94,6 +97,11 @@ struct plcode_dcs_enc {
     /* IIR LPF state */
     int32_t  lpf_state;      /* Single-pole IIR state, Q15 */
     int32_t  lpf_alpha;      /* Filter coefficient, Q15 */
+
+    /* Turn-off state */
+    int      state;           /* 0=normal, 1=turn_off, 2=stopped */
+    uint32_t turnoff_codeword;/* Golay codeword for complemented code */
+    int      turnoff_bits;    /* Bit periods remaining in turn-off */
 };
 
 /* ── DCS Decoder context ── */
@@ -194,6 +202,11 @@ struct plcode_dtmf_dec {
 extern const char plcode_cwid_chars[PLCODE_CWID_NUM_CHARS];
 extern const char * const plcode_cwid_patterns[PLCODE_CWID_NUM_CHARS];
 
+/* Build Morse element sequence from message.
+ * elements: output array, must have room for max_elements + 1 (0 terminator).
+ * Returns number of elements (excluding terminator). */
+int plcode_cwid_build_elements(const char *message, int8_t *elements, int max_elements);
+
 /* ── CW ID constants ── */
 #define PLCODE_CWID_BLOCK_DIV   100  /* block_size = rate / 100 → 10ms */
 #define PLCODE_CWID_MSG_MAX     128
@@ -241,6 +254,259 @@ struct plcode_cwid_dec {
     char     message[PLCODE_CWID_MSG_MAX];
     int      message_len;
     char     last_char;
+};
+
+/* ── MCW Encoder context ── */
+struct plcode_mcw_enc {
+    uint32_t phase;          /* Phase accumulator for tone */
+    uint32_t phase_inc;      /* Phase increment per sample */
+    int16_t  amplitude;
+    int      dot_samples;    /* Samples per dot-length */
+    int      ramp_len;       /* Samples in attack/decay ramp */
+    int16_t *ramp;           /* Raised-cosine ramp table (Q15, 0..32767) */
+
+    int8_t  *elements;       /* Element sequence: +N=tone, -N=gap, 0=end */
+    int      num_elements;
+    int      cur_element;
+    int      cur_sample;
+    int      cur_duration;
+    int      complete;
+};
+
+/* ── MCW Decoder context ── */
+struct plcode_mcw_dec {
+    int      rate;
+    int      block_size;     /* = rate / PLCODE_CWID_BLOCK_DIV (10ms) */
+    int      sample_count;
+
+    int64_t  s1;
+    int64_t  s2;
+    int32_t  coeff;          /* 2*cos(2*pi*f/fs) in Q28 */
+
+    int      dot_samples;
+    int      tone_on;
+    int      tone_samples;
+    int      gap_samples;
+
+    char     pattern[PLCODE_CWID_PATTERN_MAX];
+    int      pattern_len;
+    char     message[PLCODE_CWID_MSG_MAX];
+    int      message_len;
+    char     last_char;
+};
+
+/* ── FSK CW Encoder context ── */
+struct plcode_fskcw_enc {
+    uint32_t phase;            /* Single phase accumulator (CPFSK) */
+    uint32_t mark_phase_inc;   /* Phase increment for mark freq */
+    uint32_t space_phase_inc;  /* Phase increment for space freq */
+    int16_t  amplitude;
+    int      dot_samples;
+
+    int8_t  *elements;
+    int      num_elements;
+    int      cur_element;
+    int      cur_sample;
+    int      cur_duration;
+    int      complete;
+};
+
+/* ── FSK CW Decoder context ── */
+struct plcode_fskcw_dec {
+    int      rate;
+    int      block_size;
+    int      sample_count;
+
+    /* Goertzel for mark frequency */
+    int64_t  mark_s1, mark_s2;
+    int32_t  mark_coeff;
+
+    /* Goertzel for space frequency */
+    int64_t  space_s1, space_s2;
+    int32_t  space_coeff;
+
+    int      dot_samples;
+    int      tone_on;        /* 1 = mark detected, 0 = space detected */
+    int      tone_samples;
+    int      gap_samples;
+
+    char     pattern[PLCODE_CWID_PATTERN_MAX];
+    int      pattern_len;
+    char     message[PLCODE_CWID_MSG_MAX];
+    int      message_len;
+    char     last_char;
+};
+
+/* ── Two-Tone Paging tables ── */
+#define PLCODE_TWOTONE_BLOCK_DIV 20  /* 50ms blocks = rate / 20 */
+
+extern const uint16_t plcode_twotone_freqs[PLCODE_TWOTONE_NUM_FREQS];
+
+/* ── Two-Tone Paging Encoder context ── */
+struct plcode_twotone_enc {
+    uint32_t phase;
+    uint32_t phase_inc_a;    /* Phase increment for tone A */
+    uint32_t phase_inc_b;    /* Phase increment for tone B */
+    int16_t  amplitude;
+    int      tone_a_samples; /* Total samples for tone A */
+    int      tone_b_samples; /* Total samples for tone B */
+    int      cur_sample;     /* Current sample position */
+    int      complete;
+};
+
+/* ── Two-Tone Paging Decoder context ── */
+struct plcode_twotone_dec {
+    int      rate;
+    int      block_size;     /* = rate / PLCODE_TWOTONE_BLOCK_DIV (50ms) */
+    int      sample_count;
+
+    /* Goertzel filters for all 33 paging frequencies */
+    int64_t  s1[PLCODE_TWOTONE_NUM_FREQS];
+    int64_t  s2[PLCODE_TWOTONE_NUM_FREQS];
+    int32_t  coeff[PLCODE_TWOTONE_NUM_FREQS];
+
+    /* Detection state */
+    int      tone_a_idx;     /* Detected first tone index, or -1 */
+    int      tone_a_count;   /* Consecutive blocks with tone A */
+    int      tone_b_idx;     /* Detected second tone index, or -1 */
+    int      tone_b_count;   /* Consecutive blocks with tone B */
+    int      state;          /* 0=waiting_A, 1=in_A, 2=waiting_B, 3=in_B */
+    int      detected;
+    int      det_a_idx;      /* Confirmed tone A index (preserved after detect) */
+    int      det_b_idx;      /* Confirmed tone B index (preserved after detect) */
+};
+
+/* ── Selcall tables ── */
+#define PLCODE_SELCALL_BLOCK_DIV 100  /* 10ms blocks */
+extern const uint16_t plcode_selcall_zvei1[PLCODE_SELCALL_NUM_TONES];
+extern const uint16_t plcode_selcall_ccir[PLCODE_SELCALL_NUM_TONES];
+extern const uint16_t plcode_selcall_eia[PLCODE_SELCALL_NUM_TONES];
+
+/* Returns pointer to the frequency table for a given standard. */
+const uint16_t *plcode_selcall_table(plcode_selcall_std_t std);
+
+/* Returns tone duration in ms for a given standard. */
+int plcode_selcall_tone_ms(plcode_selcall_std_t std);
+
+/* ── Selcall Encoder context ── */
+struct plcode_selcall_enc {
+    uint32_t phase;
+    uint32_t phase_inc[PLCODE_SELCALL_ADDR_LEN]; /* Phase inc for each tone */
+    int16_t  amplitude;
+    int      tone_samples;   /* Samples per tone */
+    int      num_tones;      /* Always 5 */
+    int      cur_tone;       /* Current tone index (0-4) */
+    int      cur_sample;     /* Sample within current tone */
+    int      complete;
+};
+
+/* ── Selcall Decoder context ── */
+struct plcode_selcall_dec {
+    int      rate;
+    int      block_size;     /* = rate / PLCODE_SELCALL_BLOCK_DIV (10ms) */
+    int      sample_count;
+
+    /* Goertzel filters for 12 selcall frequencies */
+    int64_t  s1[PLCODE_SELCALL_NUM_TONES];
+    int64_t  s2[PLCODE_SELCALL_NUM_TONES];
+    int32_t  coeff[PLCODE_SELCALL_NUM_TONES];
+
+    int      tone_samples;   /* Expected samples per tone */
+    int      cur_tone;       /* Current detected tone digit, or -1 */
+    int      tone_count;     /* Consecutive blocks with same tone */
+    int      num_received;   /* Digits received so far */
+    char     address[PLCODE_SELCALL_ADDR_LEN + 1];
+    int      detected;
+};
+
+/* ── Tone Burst Encoder context ── */
+struct plcode_toneburst_enc {
+    uint32_t phase;
+    uint32_t phase_inc;
+    int16_t  amplitude;
+    int      total_samples;  /* Total samples for burst */
+    int      cur_sample;
+    int      complete;
+};
+
+/* ── Tone Burst Decoder context ── */
+struct plcode_toneburst_dec {
+    int      rate;
+    int      block_size;     /* = rate / 100 (10ms blocks) */
+    int      sample_count;
+
+    int64_t  s1;
+    int64_t  s2;
+    int32_t  coeff;
+
+    int      min_samples;    /* Minimum burst duration in samples */
+    int      tone_active;    /* Current tone state */
+    int      tone_samples;   /* Accumulated tone duration */
+    int      detected;       /* 1 if minimum duration met */
+};
+
+/* ── MDC-1200 constants ── */
+#define PLCODE_MDC1200_BAUD     1200
+#define PLCODE_MDC1200_MARK_HZ  1200
+#define PLCODE_MDC1200_SPACE_HZ 1800
+#define PLCODE_MDC1200_SYNC     0x07FF
+#define PLCODE_MDC1200_PREAMBLE_BITS 40
+#define PLCODE_MDC1200_SYNC_BITS     16
+#define PLCODE_MDC1200_DATA_BITS     56  /* op(8)+arg(8)+id(16)+crc(16)+checksum(8) */
+
+/* ── MDC-1200 Encoder context ── */
+struct plcode_mdc1200_enc {
+    uint32_t phase;           /* CPFSK phase accumulator */
+    uint32_t mark_phase_inc;
+    uint32_t space_phase_inc;
+    int16_t  amplitude;
+
+    uint8_t  bits[16];        /* Packet bitstream (packed bytes) */
+    int      total_bits;      /* Total bits in packet */
+    int      cur_bit;         /* Current bit index */
+    int      bit_samples;     /* Samples per bit (rate/1200) */
+    int      cur_sample;      /* Sample within current bit */
+    int      complete;
+};
+
+/* ── MDC-1200 Decoder context ── */
+struct plcode_mdc1200_dec {
+    int      rate;
+    int      block_size;      /* Samples per bit-period Goertzel block */
+    int      sample_count;
+
+    /* Goertzel for mark and space */
+    int64_t  mark_s1, mark_s2;
+    int32_t  mark_coeff;
+    int64_t  space_s1, space_s2;
+    int32_t  space_coeff;
+
+    /* Bit stream */
+    uint32_t shift_reg;       /* 16-bit shift register for sync detection */
+    int      synced;
+    uint8_t  packet[8];       /* Received packet bytes */
+    int      packet_bits;     /* Bits received after sync */
+
+    /* Result */
+    int      detected;
+    uint8_t  op;
+    uint8_t  arg;
+    uint16_t unit_id;
+};
+
+/* ── Courtesy Tone Encoder context ── */
+struct plcode_courtesy_enc {
+    uint32_t phase;
+    int      rate;
+    int      num_tones;
+    int      cur_tone;        /* Current tone index */
+    int      cur_sample;      /* Sample within current tone */
+
+    /* Per-tone parameters (copied from input) */
+    uint32_t *phase_incs;     /* Phase increment per tone (0 for silence) */
+    int      *tone_samples;   /* Duration in samples per tone */
+    int16_t  *amplitudes;     /* Amplitude per tone */
+    int       complete;
 };
 
 /* ── Tone Generator context ── */

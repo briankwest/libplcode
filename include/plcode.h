@@ -83,6 +83,16 @@ void plcode_ctcss_enc_process(plcode_ctcss_enc_t *ctx, int16_t *buf, size_t n);
 /* Destroy encoder, free all memory. */
 void plcode_ctcss_enc_destroy(plcode_ctcss_enc_t *ctx);
 
+/* Trigger reverse burst (180° phase inversion for ~200ms, then stop).
+ * Call during normal tone generation to signal end of transmission. */
+void plcode_ctcss_enc_reverse_burst(plcode_ctcss_enc_t *ctx);
+
+/* Returns 1 if the encoder has stopped after completing a reverse burst. */
+int plcode_ctcss_enc_stopped(plcode_ctcss_enc_t *ctx);
+
+/* Resume normal tone generation after a reverse burst stop. */
+void plcode_ctcss_enc_resume(plcode_ctcss_enc_t *ctx);
+
 /* ── CTCSS Decoder ── */
 
 typedef struct plcode_ctcss_dec plcode_ctcss_dec_t;
@@ -135,6 +145,16 @@ void plcode_dcs_enc_process(plcode_dcs_enc_t *ctx, int16_t *buf, size_t n);
 
 /* Destroy encoder, free all memory. */
 void plcode_dcs_enc_destroy(plcode_dcs_enc_t *ctx);
+
+/* Trigger turn-off code (complemented codeword for ~3 cycles, then stop).
+ * Call during normal code generation to signal end of transmission. */
+void plcode_dcs_enc_turn_off(plcode_dcs_enc_t *ctx);
+
+/* Returns 1 if the encoder has stopped after completing turn-off. */
+int plcode_dcs_enc_stopped(plcode_dcs_enc_t *ctx);
+
+/* Resume normal code generation after turn-off. */
+void plcode_dcs_enc_resume(plcode_dcs_enc_t *ctx);
 
 /* ── DCS Decoder ── */
 
@@ -322,6 +342,345 @@ void plcode_cwid_dec_reset(plcode_cwid_dec_t *ctx);
 
 /* Destroy decoder, free all memory. */
 void plcode_cwid_dec_destroy(plcode_cwid_dec_t *ctx);
+
+/* ── MCW (Modulated CW) Encoder ── */
+
+typedef struct plcode_mcw_enc plcode_mcw_enc_t;
+
+/* Create an MCW encoder (CW with raised-cosine shaped keying).
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   message:   Null-terminated string (A-Z, 0-9, /, space).
+ *   freq:      Tone frequency in Hz (range: 300-3000).
+ *   wpm:       Speed in words per minute (range: 5-40).
+ *   amplitude: Peak amplitude 0..32767.
+ */
+int plcode_mcw_enc_create(plcode_mcw_enc_t **ctx,
+                           int rate, const char *message,
+                           int freq, int wpm, int16_t amplitude);
+
+/* Mix MCW tone into PCM buffer (additive, with clamping).
+ * After the message is complete, does not modify remaining samples. */
+void plcode_mcw_enc_process(plcode_mcw_enc_t *ctx, int16_t *buf, size_t n);
+
+/* Returns 1 if the entire message has been sent, 0 otherwise. */
+int plcode_mcw_enc_complete(plcode_mcw_enc_t *ctx);
+
+/* Destroy encoder, free all memory. */
+void plcode_mcw_enc_destroy(plcode_mcw_enc_t *ctx);
+
+/* ── MCW Decoder ── */
+
+typedef struct plcode_mcw_dec plcode_mcw_dec_t;
+
+/* Create an MCW decoder.
+ *   ctx:  Receives allocated context pointer.
+ *   rate: Sample rate (8000/16000/32000/48000).
+ *   freq: Expected tone frequency in Hz (300-3000).
+ *   wpm:  Expected speed in words per minute (5-40). */
+int plcode_mcw_dec_create(plcode_mcw_dec_t **ctx,
+                           int rate, int freq, int wpm);
+
+/* Feed PCM samples to decoder.
+ * buf:    signed 16-bit PCM samples (not modified).
+ * n:      number of samples.
+ * result: detection result (updated at end of call). */
+void plcode_mcw_dec_process(plcode_mcw_dec_t *ctx,
+                             const int16_t *buf, size_t n,
+                             plcode_cwid_result_t *result);
+
+/* Get the full decoded message accumulated so far. */
+const char *plcode_mcw_dec_message(plcode_mcw_dec_t *ctx);
+
+/* Reset decoder state. */
+void plcode_mcw_dec_reset(plcode_mcw_dec_t *ctx);
+
+/* Destroy decoder, free all memory. */
+void plcode_mcw_dec_destroy(plcode_mcw_dec_t *ctx);
+
+/* ── FSK CW Encoder ── */
+
+typedef struct plcode_fskcw_enc plcode_fskcw_enc_t;
+
+/* Create an FSK CW encoder (Morse via frequency-shift keying).
+ *   ctx:        Receives allocated context pointer.
+ *   rate:       Sample rate (8000/16000/32000/48000).
+ *   message:    Null-terminated string (A-Z, 0-9, /, space).
+ *   mark_freq:  Frequency for dits/dahs in Hz (300-3000).
+ *   space_freq: Frequency for gaps in Hz (300-3000, must differ from mark).
+ *   wpm:        Speed in words per minute (range: 5-40).
+ *   amplitude:  Peak amplitude 0..32767.
+ */
+int plcode_fskcw_enc_create(plcode_fskcw_enc_t **ctx,
+                              int rate, const char *message,
+                              int mark_freq, int space_freq,
+                              int wpm, int16_t amplitude);
+
+/* Mix FSK CW tone into PCM buffer (additive, with clamping).
+ * After the message is complete, does not modify remaining samples. */
+void plcode_fskcw_enc_process(plcode_fskcw_enc_t *ctx, int16_t *buf, size_t n);
+
+/* Returns 1 if the entire message has been sent, 0 otherwise. */
+int plcode_fskcw_enc_complete(plcode_fskcw_enc_t *ctx);
+
+/* Destroy encoder, free all memory. */
+void plcode_fskcw_enc_destroy(plcode_fskcw_enc_t *ctx);
+
+/* ── FSK CW Decoder ── */
+
+typedef struct plcode_fskcw_dec plcode_fskcw_dec_t;
+
+/* Create an FSK CW decoder.
+ *   ctx:        Receives allocated context pointer.
+ *   rate:       Sample rate (8000/16000/32000/48000).
+ *   mark_freq:  Mark frequency in Hz (300-3000).
+ *   space_freq: Space frequency in Hz (300-3000).
+ *   wpm:        Expected speed in words per minute (5-40). */
+int plcode_fskcw_dec_create(plcode_fskcw_dec_t **ctx,
+                              int rate, int mark_freq, int space_freq,
+                              int wpm);
+
+/* Feed PCM samples to decoder.
+ * buf:    signed 16-bit PCM samples (not modified).
+ * n:      number of samples.
+ * result: detection result (updated at end of call). */
+void plcode_fskcw_dec_process(plcode_fskcw_dec_t *ctx,
+                               const int16_t *buf, size_t n,
+                               plcode_cwid_result_t *result);
+
+/* Get the full decoded message accumulated so far. */
+const char *plcode_fskcw_dec_message(plcode_fskcw_dec_t *ctx);
+
+/* Reset decoder state. */
+void plcode_fskcw_dec_reset(plcode_fskcw_dec_t *ctx);
+
+/* Destroy decoder, free all memory. */
+void plcode_fskcw_dec_destroy(plcode_fskcw_dec_t *ctx);
+
+/* ── Two-Tone Sequential Paging ── */
+
+#define PLCODE_TWOTONE_NUM_FREQS 33
+
+/* Returns paging tone frequency in tenths of Hz for index 0..32.
+ * Returns 0 on invalid index. */
+uint16_t plcode_twotone_freq_x10(int index);
+
+/* Returns index for a paging frequency (tenths Hz), or -1 if not found. */
+int plcode_twotone_freq_index(uint16_t freq_x10);
+
+/* ── Two-Tone Paging Encoder ── */
+
+typedef struct plcode_twotone_enc plcode_twotone_enc_t;
+
+/* Create a two-tone paging encoder.
+ *   ctx:           Receives allocated context pointer.
+ *   rate:          Sample rate (8000/16000/32000/48000).
+ *   tone_a_freq:   First tone frequency in tenths of Hz.
+ *   tone_b_freq:   Second tone frequency in tenths of Hz.
+ *   tone_a_ms:     Duration of first tone in ms (typical: 1000).
+ *   tone_b_ms:     Duration of second tone in ms (typical: 3000).
+ *   amplitude:     Peak amplitude 0..32767.
+ */
+int plcode_twotone_enc_create(plcode_twotone_enc_t **ctx,
+                               int rate, uint16_t tone_a_freq,
+                               uint16_t tone_b_freq,
+                               int tone_a_ms, int tone_b_ms,
+                               int16_t amplitude);
+
+void plcode_twotone_enc_process(plcode_twotone_enc_t *ctx, int16_t *buf, size_t n);
+int plcode_twotone_enc_complete(plcode_twotone_enc_t *ctx);
+void plcode_twotone_enc_destroy(plcode_twotone_enc_t *ctx);
+
+/* ── Two-Tone Paging Decoder ── */
+
+typedef struct plcode_twotone_dec plcode_twotone_dec_t;
+
+typedef struct {
+    int      detected;        /* 1 if both tones received in sequence */
+    uint16_t tone_a_freq_x10; /* First tone in tenths of Hz, or 0 */
+    uint16_t tone_b_freq_x10; /* Second tone in tenths of Hz, or 0 */
+    int      tone_a_index;    /* Index into freq table, or -1 */
+    int      tone_b_index;    /* Index into freq table, or -1 */
+} plcode_twotone_result_t;
+
+int plcode_twotone_dec_create(plcode_twotone_dec_t **ctx, int rate);
+
+void plcode_twotone_dec_process(plcode_twotone_dec_t *ctx,
+                                 const int16_t *buf, size_t n,
+                                 plcode_twotone_result_t *result);
+
+void plcode_twotone_dec_reset(plcode_twotone_dec_t *ctx);
+void plcode_twotone_dec_destroy(plcode_twotone_dec_t *ctx);
+
+/* ── Five-Tone Selective Call ── */
+
+typedef enum {
+    PLCODE_SELCALL_ZVEI1 = 0,
+    PLCODE_SELCALL_CCIR  = 1,
+    PLCODE_SELCALL_EIA   = 2
+} plcode_selcall_std_t;
+
+#define PLCODE_SELCALL_NUM_TONES 12  /* digits 0-9, R(repeat), G(group) */
+#define PLCODE_SELCALL_ADDR_LEN  5
+
+/* Returns tone frequency in Hz for a selcall standard and digit index (0-11).
+ * Returns 0 on invalid input. */
+uint16_t plcode_selcall_freq(plcode_selcall_std_t standard, int digit);
+
+/* ── Selcall Encoder ── */
+
+typedef struct plcode_selcall_enc plcode_selcall_enc_t;
+
+/* Create a five-tone selcall encoder.
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   standard:  PLCODE_SELCALL_ZVEI1, CCIR, or EIA.
+ *   address:   5-digit string using chars '0'-'9' (e.g., "12345").
+ *   amplitude: Peak amplitude 0..32767.
+ */
+int plcode_selcall_enc_create(plcode_selcall_enc_t **ctx,
+                               int rate, plcode_selcall_std_t standard,
+                               const char *address, int16_t amplitude);
+
+void plcode_selcall_enc_process(plcode_selcall_enc_t *ctx, int16_t *buf, size_t n);
+int plcode_selcall_enc_complete(plcode_selcall_enc_t *ctx);
+void plcode_selcall_enc_destroy(plcode_selcall_enc_t *ctx);
+
+/* ── Selcall Decoder ── */
+
+typedef struct plcode_selcall_dec plcode_selcall_dec_t;
+
+typedef struct {
+    int  detected;                            /* 1 if 5-tone sequence detected */
+    char address[PLCODE_SELCALL_ADDR_LEN+1];  /* Decoded address, null-terminated */
+} plcode_selcall_result_t;
+
+int plcode_selcall_dec_create(plcode_selcall_dec_t **ctx,
+                               int rate, plcode_selcall_std_t standard);
+
+void plcode_selcall_dec_process(plcode_selcall_dec_t *ctx,
+                                 const int16_t *buf, size_t n,
+                                 plcode_selcall_result_t *result);
+
+void plcode_selcall_dec_reset(plcode_selcall_dec_t *ctx);
+void plcode_selcall_dec_destroy(plcode_selcall_dec_t *ctx);
+
+/* ── Access Tone Burst ── */
+
+typedef struct plcode_toneburst_enc plcode_toneburst_enc_t;
+
+/* Create an access tone burst encoder.
+ *   ctx:         Receives allocated context pointer.
+ *   rate:        Sample rate (8000/16000/32000/48000).
+ *   freq:        Tone frequency in Hz (typical: 1750, range: 300-3000).
+ *   duration_ms: Burst duration in ms (typical: 500-1000).
+ *   amplitude:   Peak amplitude 0..32767.
+ */
+int plcode_toneburst_enc_create(plcode_toneburst_enc_t **ctx,
+                                 int rate, int freq, int duration_ms,
+                                 int16_t amplitude);
+
+void plcode_toneburst_enc_process(plcode_toneburst_enc_t *ctx,
+                                   int16_t *buf, size_t n);
+int plcode_toneburst_enc_complete(plcode_toneburst_enc_t *ctx);
+void plcode_toneburst_enc_destroy(plcode_toneburst_enc_t *ctx);
+
+/* ── Tone Burst Decoder ── */
+
+typedef struct plcode_toneburst_dec plcode_toneburst_dec_t;
+
+typedef struct {
+    int detected;     /* 1 when burst confirmed (met minimum duration) */
+    int tone_active;  /* 1 while tone is present */
+} plcode_toneburst_result_t;
+
+/* Create a tone burst decoder.
+ *   ctx:            Receives allocated context pointer.
+ *   rate:           Sample rate (8000/16000/32000/48000).
+ *   freq:           Expected frequency in Hz (300-3000).
+ *   min_duration_ms: Minimum burst duration to confirm (typical: 200-500).
+ */
+int plcode_toneburst_dec_create(plcode_toneburst_dec_t **ctx,
+                                 int rate, int freq, int min_duration_ms);
+
+void plcode_toneburst_dec_process(plcode_toneburst_dec_t *ctx,
+                                   const int16_t *buf, size_t n,
+                                   plcode_toneburst_result_t *result);
+
+void plcode_toneburst_dec_reset(plcode_toneburst_dec_t *ctx);
+void plcode_toneburst_dec_destroy(plcode_toneburst_dec_t *ctx);
+
+/* ── MDC-1200 Signaling ── */
+
+#define PLCODE_MDC1200_OP_PTT_PRE  0x01  /* Pre-key PTT ID */
+#define PLCODE_MDC1200_OP_PTT_POST 0x00  /* Post-key PTT ID */
+#define PLCODE_MDC1200_OP_EMERG    0x80  /* Emergency */
+#define PLCODE_MDC1200_OP_ACK      0x20  /* Acknowledge */
+
+typedef struct plcode_mdc1200_enc plcode_mdc1200_enc_t;
+
+/* Create an MDC-1200 encoder.
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   op:        Operation code (e.g., PLCODE_MDC1200_OP_PTT_PRE).
+ *   arg:       Argument byte.
+ *   unit_id:   Unit ID (0x0001-0xFFFF).
+ *   amplitude: Peak amplitude 0..32767.
+ */
+int plcode_mdc1200_enc_create(plcode_mdc1200_enc_t **ctx,
+                               int rate, uint8_t op, uint8_t arg,
+                               uint16_t unit_id, int16_t amplitude);
+
+void plcode_mdc1200_enc_process(plcode_mdc1200_enc_t *ctx,
+                                 int16_t *buf, size_t n);
+int plcode_mdc1200_enc_complete(plcode_mdc1200_enc_t *ctx);
+void plcode_mdc1200_enc_destroy(plcode_mdc1200_enc_t *ctx);
+
+/* ── MDC-1200 Decoder ── */
+
+typedef struct plcode_mdc1200_dec plcode_mdc1200_dec_t;
+
+typedef struct {
+    int      detected;   /* 1 when a valid packet is received */
+    uint8_t  op;         /* Operation code */
+    uint8_t  arg;        /* Argument byte */
+    uint16_t unit_id;    /* Unit ID */
+} plcode_mdc1200_result_t;
+
+int plcode_mdc1200_dec_create(plcode_mdc1200_dec_t **ctx, int rate);
+
+void plcode_mdc1200_dec_process(plcode_mdc1200_dec_t *ctx,
+                                 const int16_t *buf, size_t n,
+                                 plcode_mdc1200_result_t *result);
+
+void plcode_mdc1200_dec_reset(plcode_mdc1200_dec_t *ctx);
+void plcode_mdc1200_dec_destroy(plcode_mdc1200_dec_t *ctx);
+
+/* ── Courtesy Tone Generator ── */
+
+typedef struct plcode_courtesy_enc plcode_courtesy_enc_t;
+
+typedef struct {
+    int      freq;       /* Tone frequency in Hz (0 = silence/gap) */
+    int      duration_ms;/* Duration in milliseconds */
+    int16_t  amplitude;  /* Peak amplitude 0..32767 */
+} plcode_courtesy_tone_t;
+
+/* Create a courtesy tone generator.
+ *   ctx:       Receives allocated context pointer.
+ *   rate:      Sample rate (8000/16000/32000/48000).
+ *   tones:     Array of tone descriptors.
+ *   num_tones: Number of entries in the array.
+ */
+int plcode_courtesy_enc_create(plcode_courtesy_enc_t **ctx,
+                                int rate,
+                                const plcode_courtesy_tone_t *tones,
+                                int num_tones);
+
+void plcode_courtesy_enc_process(plcode_courtesy_enc_t *ctx,
+                                  int16_t *buf, size_t n);
+int plcode_courtesy_enc_complete(plcode_courtesy_enc_t *ctx);
+void plcode_courtesy_enc_destroy(plcode_courtesy_enc_t *ctx);
 
 /* ── Tone Generator (arbitrary frequency) ── */
 

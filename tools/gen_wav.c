@@ -227,6 +227,154 @@ int main(void)
         }
     }
 
+    /* MCW — 5 seconds at 800 Hz tone, 20 WPM */
+    {
+        int mcw_samples = SAMPLE_RATE * 5;
+        int16_t *buf = (int16_t *)calloc((size_t)mcw_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_mcw_enc_t *enc = NULL;
+            printf("Generating MCW...\n");
+            if (plcode_mcw_enc_create(&enc, SAMPLE_RATE, "W1AW", 800, 20,
+                                       AMPLITUDE) == PLCODE_OK) {
+                plcode_mcw_enc_process(enc, buf, (size_t)mcw_samples);
+                if (write_wav("wav/mcw_W1AW.wav", buf, mcw_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/mcw_W1AW.wav  (MCW 'W1AW')\n");
+                }
+                plcode_mcw_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
+    /* FSK CW — 5 seconds, mark 800 Hz / space 600 Hz, 20 WPM */
+    {
+        int fsk_samples = SAMPLE_RATE * 5;
+        int16_t *buf = (int16_t *)calloc((size_t)fsk_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_fskcw_enc_t *enc = NULL;
+            printf("Generating FSK CW...\n");
+            if (plcode_fskcw_enc_create(&enc, SAMPLE_RATE, "W1AW", 800, 600, 20,
+                                          AMPLITUDE) == PLCODE_OK) {
+                plcode_fskcw_enc_process(enc, buf, (size_t)fsk_samples);
+                if (write_wav("wav/fskcw_W1AW.wav", buf, fsk_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/fskcw_W1AW.wav  (FSK CW 'W1AW')\n");
+                }
+                plcode_fskcw_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
+    /* Two-Tone Paging — tone A 330.5 Hz 1s, tone B 433.7 Hz 3s */
+    {
+        int tt_samples = SAMPLE_RATE * 5;
+        int16_t *buf = (int16_t *)calloc((size_t)tt_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_twotone_enc_t *enc = NULL;
+            printf("Generating Two-Tone Page...\n");
+            if (plcode_twotone_enc_create(&enc, SAMPLE_RATE,
+                    plcode_twotone_freq_x10(0), plcode_twotone_freq_x10(5),
+                    1000, 3000, AMPLITUDE) == PLCODE_OK) {
+                plcode_twotone_enc_process(enc, buf, (size_t)tt_samples);
+                if (write_wav("wav/twotone_page.wav", buf, tt_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/twotone_page.wav\n");
+                }
+                plcode_twotone_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
+    /* Five-Tone Selcall ZVEI1 "12345" */
+    {
+        int sc_samples = SAMPLE_RATE * 2;
+        int16_t *buf = (int16_t *)calloc((size_t)sc_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_selcall_enc_t *enc = NULL;
+            printf("Generating Selcall...\n");
+            if (plcode_selcall_enc_create(&enc, SAMPLE_RATE,
+                    PLCODE_SELCALL_ZVEI1, "12345", AMPLITUDE) == PLCODE_OK) {
+                plcode_selcall_enc_process(enc, buf, (size_t)sc_samples);
+                if (write_wav("wav/selcall_12345.wav", buf, sc_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/selcall_12345.wav  (ZVEI1 '12345')\n");
+                }
+                plcode_selcall_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
+    /* 1750 Hz Tone Burst — 500ms */
+    {
+        int tb_samples = SAMPLE_RATE * 1;
+        int16_t *buf = (int16_t *)calloc((size_t)tb_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_toneburst_enc_t *enc = NULL;
+            printf("Generating Tone Burst...\n");
+            if (plcode_toneburst_enc_create(&enc, SAMPLE_RATE, 1750, 500,
+                                              AMPLITUDE) == PLCODE_OK) {
+                plcode_toneburst_enc_process(enc, buf, (size_t)tb_samples);
+                if (write_wav("wav/toneburst_1750.wav", buf, tb_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/toneburst_1750.wav  (1750 Hz, 500ms)\n");
+                }
+                plcode_toneburst_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
+    /* MDC-1200 PTT ID */
+    {
+        int mdc_samples = SAMPLE_RATE * 1;
+        int16_t *buf = (int16_t *)calloc((size_t)mdc_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_mdc1200_enc_t *enc = NULL;
+            printf("Generating MDC-1200...\n");
+            if (plcode_mdc1200_enc_create(&enc, SAMPLE_RATE,
+                    PLCODE_MDC1200_OP_PTT_PRE, 0x00, 0x1234,
+                    AMPLITUDE) == PLCODE_OK) {
+                plcode_mdc1200_enc_process(enc, buf, (size_t)mdc_samples);
+                if (write_wav("wav/mdc1200_ptt.wav", buf, mdc_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/mdc1200_ptt.wav  (PTT ID 0x1234)\n");
+                }
+                plcode_mdc1200_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
+    /* Courtesy Tone — 3-tone beep */
+    {
+        plcode_courtesy_tone_t ct[] = {
+            { 800,  80, AMPLITUDE },
+            {   0,  40,         0 },
+            { 1000, 80, AMPLITUDE },
+            {   0,  40,         0 },
+            { 1200, 80, AMPLITUDE },
+        };
+        int ct_samples = SAMPLE_RATE * 1;
+        int16_t *buf = (int16_t *)calloc((size_t)ct_samples, sizeof(int16_t));
+        if (buf) {
+            plcode_courtesy_enc_t *enc = NULL;
+            printf("Generating Courtesy Tone...\n");
+            if (plcode_courtesy_enc_create(&enc, SAMPLE_RATE, ct, 5) == PLCODE_OK) {
+                plcode_courtesy_enc_process(enc, buf, (size_t)ct_samples);
+                if (write_wav("wav/courtesy_tone.wav", buf, ct_samples,
+                              SAMPLE_RATE) == 0) {
+                    printf("  wav/courtesy_tone.wav  (3-tone beep)\n");
+                }
+                plcode_courtesy_enc_destroy(enc);
+            }
+            free(buf);
+        }
+    }
+
     printf("\nDone.\n");
     return 0;
 }

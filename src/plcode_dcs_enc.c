@@ -51,6 +51,17 @@ int plcode_dcs_enc_create(plcode_dcs_enc_t **ctx,
     }
     c->lpf_state = 0;
 
+    /* Precompute turn-off codeword: complement of 9-bit code */
+    {
+        uint16_t code9 = plcode_dcs_codes[code_idx] & 0x1FF;
+        uint16_t comp9 = (~code9) & 0x1FF;
+        uint16_t data12 = (uint16_t)(0x800u | comp9);
+        c->turnoff_codeword = plcode_golay_encode(data12);
+        if (inverted)
+            c->turnoff_codeword ^= 0x7FFFFF;
+    }
+    c->state = 0;
+
     *ctx = c;
     return PLCODE_OK;
 }
@@ -61,11 +72,21 @@ void plcode_dcs_enc_process(plcode_dcs_enc_t *ctx, int16_t *buf, size_t n)
     if (!ctx || !buf) return;
 
     for (i = 0; i < n; i++) {
+        uint32_t cw;
+        int bit;
+        int16_t raw, filtered;
+        uint32_t prev_phase;
+
+        if (ctx->state == 2) break; /* stopped */
+
+        /* Select active codeword */
+        cw = (ctx->state == 1) ? ctx->turnoff_codeword : ctx->codeword;
+
         /* Get current bit value — LSB first per TIA/EIA-603 */
-        int bit = (ctx->codeword >> ctx->bit_index) & 1;
+        bit = (cw >> ctx->bit_index) & 1;
 
         /* NRZ: +amplitude for 1, -amplitude for 0 */
-        int16_t raw = bit ? ctx->amplitude : (int16_t)(-ctx->amplitude);
+        raw = bit ? ctx->amplitude : (int16_t)(-ctx->amplitude);
 
         /* IIR LPF: state += alpha * (input - state), Q15 */
         {
@@ -74,21 +95,46 @@ void plcode_dcs_enc_process(plcode_dcs_enc_t *ctx, int16_t *buf, size_t n)
             ctx->lpf_state += (int32_t)(((int64_t)ctx->lpf_alpha * diff) >> 15);
         }
 
-        int16_t filtered = (int16_t)(ctx->lpf_state >> 15);
+        filtered = (int16_t)(ctx->lpf_state >> 15);
 
         /* Mix into buffer */
         buf[i] = plcode_clamp16((int32_t)buf[i] + (int32_t)filtered);
 
         /* Advance bit clock */
-        uint32_t prev_phase = ctx->bit_phase;
+        prev_phase = ctx->bit_phase;
         ctx->bit_phase += ctx->bit_phase_inc;
 
-        /* Check for bit clock rollover (or crossing threshold) */
         if (ctx->bit_phase < prev_phase) {
-            /* Phase wrapped — advance to next bit */
             ctx->bit_index = (ctx->bit_index + 1) % PLCODE_DCS_CODEWORD_BITS;
+
+            /* Count down turn-off bits */
+            if (ctx->state == 1) {
+                ctx->turnoff_bits--;
+                if (ctx->turnoff_bits <= 0)
+                    ctx->state = 2; /* stopped */
+            }
         }
     }
+}
+
+void plcode_dcs_enc_turn_off(plcode_dcs_enc_t *ctx)
+{
+    if (!ctx) return;
+    ctx->state = 1;
+    /* Send 3 complete codeword cycles (3 * 23 bits) */
+    ctx->turnoff_bits = 3 * PLCODE_DCS_CODEWORD_BITS;
+}
+
+int plcode_dcs_enc_stopped(plcode_dcs_enc_t *ctx)
+{
+    if (!ctx) return 1;
+    return (ctx->state == 2) ? 1 : 0;
+}
+
+void plcode_dcs_enc_resume(plcode_dcs_enc_t *ctx)
+{
+    if (!ctx) return;
+    ctx->state = 0;
 }
 
 void plcode_dcs_enc_destroy(plcode_dcs_enc_t *ctx)

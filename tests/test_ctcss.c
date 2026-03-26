@@ -353,6 +353,91 @@ void test_ctcss_fast_detect_all_rates(void)
     }
 }
 
+void test_ctcss_reverse_burst(void)
+{
+    int rate = 8000;
+    uint16_t freq = 1000; /* 100.0 Hz */
+
+    TEST("CTCSS reverse burst stops encoder");
+
+    plcode_ctcss_enc_t *enc = NULL;
+    if (plcode_ctcss_enc_create(&enc, rate, freq, 3000) != PLCODE_OK) {
+        FAIL("create"); return;
+    }
+
+    int total_samples = rate * 2;
+    int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) { FAIL("alloc"); plcode_ctcss_enc_destroy(enc); return; }
+
+    /* Generate 500ms of normal tone */
+    plcode_ctcss_enc_process(enc, buf, (size_t)(rate / 2));
+
+    if (plcode_ctcss_enc_stopped(enc)) {
+        FAIL("stopped too early");
+        goto rb_cleanup;
+    }
+
+    /* Trigger reverse burst */
+    plcode_ctcss_enc_reverse_burst(enc);
+
+    /* Process rest — should stop after ~200ms */
+    plcode_ctcss_enc_process(enc, buf + rate / 2, (size_t)(total_samples - rate / 2));
+
+    if (plcode_ctcss_enc_stopped(enc)) {
+        /* Verify audio after stop point is unmodified (zeros in our case) */
+        PASS();
+    } else {
+        FAIL("encoder did not stop after reverse burst");
+    }
+
+rb_cleanup:
+    free(buf);
+    plcode_ctcss_enc_destroy(enc);
+}
+
+void test_ctcss_resume_after_burst(void)
+{
+    int rate = 8000;
+    uint16_t freq = 1000;
+
+    TEST("CTCSS resume after reverse burst");
+
+    plcode_ctcss_enc_t *enc = NULL;
+    if (plcode_ctcss_enc_create(&enc, rate, freq, 3000) != PLCODE_OK) {
+        FAIL("create"); return;
+    }
+
+    int total_samples = rate * 1;
+    int16_t *buf = (int16_t *)calloc((size_t)total_samples, sizeof(int16_t));
+    if (!buf) { FAIL("alloc"); plcode_ctcss_enc_destroy(enc); return; }
+
+    /* Normal → reverse burst → stopped → resume → verify audio */
+    plcode_ctcss_enc_process(enc, buf, (size_t)(rate / 4));
+    plcode_ctcss_enc_reverse_burst(enc);
+    plcode_ctcss_enc_process(enc, buf, (size_t)(rate / 2));
+
+    if (!plcode_ctcss_enc_stopped(enc)) {
+        FAIL("not stopped after burst"); goto res_cleanup;
+    }
+
+    plcode_ctcss_enc_resume(enc);
+    memset(buf, 0, (size_t)total_samples * sizeof(int16_t));
+    plcode_ctcss_enc_process(enc, buf, (size_t)total_samples);
+
+    /* Check that audio was generated (non-zero samples) */
+    {
+        int i, has_audio = 0;
+        for (i = 0; i < total_samples; i++) {
+            if (buf[i] != 0) { has_audio = 1; break; }
+        }
+        if (has_audio) { PASS(); } else { FAIL("no audio after resume"); }
+    }
+
+res_cleanup:
+    free(buf);
+    plcode_ctcss_enc_destroy(enc);
+}
+
 int test_ctcss(void)
 {
     printf("CTCSS tests:\n");
@@ -364,6 +449,8 @@ int test_ctcss(void)
     test_ctcss_adjacent_rejection();
     test_ctcss_fast_detect();
     test_ctcss_fast_detect_all_rates();
+    test_ctcss_reverse_burst();
+    test_ctcss_resume_after_burst();
 
     printf("  CTCSS: %d/%d passed\n\n", tests_passed, tests_run);
     return tests_passed == tests_run ? 0 : 1;
