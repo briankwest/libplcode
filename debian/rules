@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	$(MAKE)
+
+override_dh_auto_test:
+	$(MAKE) test
+
+override_dh_auto_install:
+	install -d debian/libplcode-dev/usr/lib/$(DEB_HOST_MULTIARCH)
+	install -m 644 libplcode.a debian/libplcode-dev/usr/lib/$(DEB_HOST_MULTIARCH)/libplcode.a
+	install -d debian/libplcode-dev/usr/include
+	install -m 644 include/plcode.h debian/libplcode-dev/usr/include/plcode.h
+
+override_dh_auto_clean:
+	$(MAKE) clean || true

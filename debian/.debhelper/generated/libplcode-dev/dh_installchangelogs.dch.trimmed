@@ -1,0 +1,17 @@
+libplcode (0.1.0-1) stable; urgency=medium
+
+  * Initial release.
+  * CTCSS (PL) tone encoder/decoder for all 50 standard tones.
+  * DCS (DPL) code encoder/decoder for all 104 standard codes.
+  * DTMF dual-tone encoder/decoder for all 16 symbols.
+  * CW ID (Morse code) encoder/decoder.
+  * MCW (Modulated CW) encoder/decoder.
+  * FSK CW encoder/decoder.
+  * Two-Tone Sequential Paging encoder/decoder.
+  * Five-Tone Selective Call (ZVEI/CCIR/EIA) encoder/decoder.
+  * MDC-1200 signaling encoder/decoder.
+  * Tone burst access encoder/decoder.
+  * Courtesy tone generator.
+  * Golay (23,12) codec for DCS error detection.
+
+ -- Brian West <brian@bkw.org>  Sat, 28 Mar 2026 00:00:00 +0000
