@@ -1,6 +1,6 @@
 CC      ?= cc
 AR      ?= ar
-CFLAGS  = -std=c99 -Wall -Wextra -Wpedantic -O2 -Iinclude -Isrc
+CFLAGS  = -std=c99 -Wall -Wextra -Wpedantic -O2 -fPIC -Iinclude -Isrc
 LDFLAGS = -lm
 
 LIB     = libplcode.a
