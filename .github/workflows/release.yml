@@ -17,8 +17,13 @@ jobs:
       matrix:
         include:
           - arch: amd64
+            distro: ubuntu
             runner: ubuntu-24.04
           - arch: arm64
+            distro: ubuntu
+            runner: ubuntu-24.04
+          - arch: arm64
+            distro: debian13
             runner: ubuntu-24.04
     runs-on: ${{ matrix.runner }}
     steps:
@@ -48,12 +53,27 @@ jobs:
         with:
           platforms: arm64
 
-      - name: Build .deb (arm64)
-        if: matrix.arch == 'arm64'
+      - name: Build .deb (arm64 Ubuntu)
+        if: matrix.arch == 'arm64' && matrix.distro == 'ubuntu'
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: aarch64
           distro: ubuntu22.04
+          githubToken: ${{ github.token }}
+          dockerRunArgs: --volume "${{ github.workspace }}:/workspace"
+          run: |
+            cd /workspace
+            apt-get update
+            apt-get install -y autoconf automake libtool devscripts debhelper fakeroot build-essential
+            scripts/generate-changelog.sh "${{ steps.version.outputs.VERSION }}"
+            dpkg-buildpackage -us -uc -b
+
+      - name: Build .deb (arm64 Debian 13)
+        if: matrix.arch == 'arm64' && matrix.distro == 'debian13'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: trixie
           githubToken: ${{ github.token }}
           dockerRunArgs: --volume "${{ github.workspace }}:/workspace"
           run: |
@@ -72,7 +92,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: deb-${{ matrix.arch }}
+          name: deb-${{ matrix.arch }}-${{ matrix.distro }}
           path: dist/*.deb
 
   create-release:
