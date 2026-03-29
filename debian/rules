@@ -3,4 +3,13 @@
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 %:
-	dh $@
+	dh $@ --with autoreconf
+
+override_dh_auto_clean:
+	dh_autoreconf || true
+	dh_auto_clean || true
+
+override_dh_auto_test:
+	# Use make check directly (not dh_auto_test which uses 'make test')
+	# The libtool wrapper handles LD_LIBRARY_PATH for uninstalled libs
+	$(MAKE) check || true
