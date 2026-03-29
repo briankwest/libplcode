@@ -1,4 +1,4 @@
-AC_INIT([libplcode], [0.1.0], [brian@bkw.org], [libplcode],
+AC_INIT([libplcode], [1.0.0], [brian@mcalester.net], [libplcode],
         [https://github.com/briankwest/libplcode])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIRS([m4])
