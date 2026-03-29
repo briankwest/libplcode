@@ -1,4 +1,4 @@
-libplcode (1.0.0) stable; urgency=medium
+libplcode (1.0.0-1) stable; urgency=medium
 
   * Initial release.
   * CTCSS (PL) tone encoder/decoder for all 50 standard tones.

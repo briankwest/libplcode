@@ -1,0 +1,4 @@
+usr/include/plcode.h
+usr/lib/*/libplcode.a
+usr/lib/*/libplcode.so
+usr/lib/*/pkgconfig/plcode.pc
