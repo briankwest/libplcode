@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install autotools
+        run: sudo apt-get update && sudo apt-get install -y autoconf automake libtool
+
+      - name: Bootstrap
+        run: autoreconf -fi
+
+      - name: Configure
+        run: ./configure
+
+      - name: Build
+        run: make
+
+      - name: Test
+        run: make check
+
+      - name: Verify install
+        run: |
+          make install DESTDIR=/tmp/test-install
+          test -f /tmp/test-install/usr/local/lib/libplcode.a
+          test -f /tmp/test-install/usr/local/include/plcode.h
+          test -f /tmp/test-install/usr/local/lib/pkgconfig/plcode.pc

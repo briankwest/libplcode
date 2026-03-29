@@ -1,0 +1,107 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-deb:
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install build deps (amd64)
+        if: matrix.arch == 'amd64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool devscripts debhelper fakeroot
+
+      - name: Build .deb (amd64)
+        if: matrix.arch == 'amd64'
+        run: |
+          scripts/generate-changelog.sh "${{ steps.version.outputs.VERSION }}"
+          dpkg-buildpackage -us -uc -b
+
+      - name: Set up QEMU (arm64)
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Build .deb (arm64)
+        if: matrix.arch == 'arm64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ubuntu24.04
+          githubToken: ${{ github.token }}
+          dockerRunArgs: --volume "${{ github.workspace }}:/workspace"
+          run: |
+            cd /workspace
+            apt-get update
+            apt-get install -y autoconf automake libtool devscripts debhelper fakeroot build-essential
+            scripts/generate-changelog.sh "${{ steps.version.outputs.VERSION }}"
+            dpkg-buildpackage -us -uc -b
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp ../libplcode-dev_*.deb dist/ 2>/dev/null || true
+          ls -lh dist/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-${{ matrix.arch }}
+          path: dist/*.deb
+
+  create-release:
+    needs: build-deb
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate release notes
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | grep '^v' | sed -n '2p')
+          [ -z "$PREV_TAG" ] && PREV_TAG=$(git rev-list --max-parents=0 HEAD)
+          echo "## libplcode ${GITHUB_REF_NAME}" > notes.md
+          echo "" >> notes.md
+          git log --pretty=format:"- %s (%h)" "${PREV_TAG}..HEAD" >> notes.md
+          echo "" >> notes.md
+          echo "" >> notes.md
+          echo "### Packages" >> notes.md
+          for f in dist/*.deb; do
+            [ -f "$f" ] && echo "- \`$(basename $f)\`" >> notes.md
+          done
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: notes.md
+          files: dist/*.deb
