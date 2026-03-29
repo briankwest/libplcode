@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: plcode
+Description: Two-way radio signaling codec library (CTCSS/DCS/DTMF/CW ID)
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lplcode -lm
+Cflags: -I${includedir}

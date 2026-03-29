@@ -2,7 +2,7 @@ Source: libplcode
 Section: libdevel
 Priority: optional
 Maintainer: Brian West <brian@bkw.org>
-Build-Depends: debhelper-compat (= 13), build-essential
+Build-Depends: debhelper-compat (= 13), build-essential, autoconf, automake, libtool
 Standards-Version: 4.6.2
 Homepage: https://github.com/briankwest/libplcode
 Rules-Requires-Root: no

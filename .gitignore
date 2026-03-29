@@ -1,11 +1,51 @@
 # Build artifacts
 *.o
 *.a
+*.la
+*.lo
 *.dSYM/
+.libs/
+.deps/
+src/.libs/
+src/.deps/
+src/.dirstamp
+tests/.deps/
+tests/.dirstamp
+
+# Autotools generated
+/aclocal.m4
+/autom4te.cache/
+/build-aux/
+/config.h
+/config.h.in
+/config.h.in~
+/config.log
+/config.lt
+/config.status
+/configure
+/libtool
+/Makefile
+/Makefile.in
+/plcode.pc
+/stamp-h1
 
 # Binaries
 test_plcode
 gen_wav
+
+# Test logs
+test-suite.log
+*.trs
+*.log
+!debian/changelog
+
+# Debian build artifacts
+/debian/.debhelper/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/*.substvars
+/debian/libplcode-dev/
+/debian/tmp/
 
 # Python
 .venv/

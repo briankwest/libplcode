@@ -1,4 +1,7 @@
 2e110260e85680a7add77105c67d8796  usr/include/plcode.h
-7537615c8a72b821c0f63d5bfe7e030e  usr/lib/aarch64-linux-gnu/libplcode.a
+69cfb3981b973b157447cf29640f84bb  usr/lib/aarch64-linux-gnu/libplcode.a
+3df99a9cce58bbba3d04eb2ce442fa11  usr/lib/aarch64-linux-gnu/libplcode.la
+357543bbd0e472a515785728abe9f4aa  usr/lib/aarch64-linux-gnu/libplcode.so.0.0.0
+0d3d24bf0b91a8dccd27f44ec370c5e7  usr/lib/aarch64-linux-gnu/pkgconfig/plcode.pc
 461542e965b749463a3bbfa35fc95f22  usr/share/doc/libplcode-dev/changelog.Debian.gz
 304c2cddefe076201d29f840dd584015  usr/share/doc/libplcode-dev/copyright

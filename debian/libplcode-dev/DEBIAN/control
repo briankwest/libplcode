@@ -3,7 +3,7 @@ Source: libplcode
 Version: 0.1.0-1
 Architecture: arm64
 Maintainer: Brian West <brian@bkw.org>
-Installed-Size: 128
+Installed-Size: 207
 Section: libdevel
 Priority: optional
 Homepage: https://github.com/briankwest/libplcode
