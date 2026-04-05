@@ -179,6 +179,7 @@ struct plcode_dtmf_dec {
     int64_t  s1[16];         /* s[n-1] */
     int64_t  s2[16];         /* s[n-2] */
     int32_t  coeff[16];      /* 2*cos(2*pi*f/fs) in Q28 */
+    int64_t  energy_sum;     /* Accumulated sum(sample^2) for current block */
 
     /* State machine (replaces prev_digit/confirm_count) */
     int      state;          /* DTMF_ST_IDLE/PENDING/ACTIVE/COOLDOWN */

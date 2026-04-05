@@ -142,15 +142,29 @@ static int detect_digit(plcode_dtmf_dec_t *c)
 
     /* Detection criteria:
      * 1. Both strongest row and col above absolute threshold
-     * 2. Each dominant tone > 6 dB (4x power) above second in its group
-     * 3. Asymmetric twist check (FM pre-emphasis aware)
-     * 4. 2nd harmonic rejection (talk-off protection) */
+     * 2. Relative energy: DTMF bins must dominate total block energy
+     * 3. Each dominant tone > 6 dB (4x power) above second in its group
+     * 4. Asymmetric twist check (FM pre-emphasis aware)
+     * 5. 2nd harmonic rejection (talk-off protection) */
 
     int64_t threshold = (int64_t)c->block_size * c->block_size / 16;
 
     if (max_row < 0 || max_col < 0 ||
         max_row_mag <= threshold || max_col_mag <= threshold)
         return -1;
+
+    /* Relative energy check (talk-off protection per Bellcore/ITU-T):
+     * For a clean dual-tone DTMF signal, the two Goertzel bins capture
+     * nearly all the signal energy: (row+col) / (energy * N) ≈ 1.0.
+     * Require at least 25% (factor of 4) to reject speech/music where
+     * energy is spread across many frequencies.
+     * Guard against silence (energy_sum==0) with the absolute threshold above. */
+    if (c->energy_sum > 0) {
+        int64_t dtmf_energy = max_row_mag + max_col_mag;
+        int64_t total_scaled = (c->energy_sum / 4) * (int64_t)c->block_size;
+        if (dtmf_energy < total_scaled)
+            return -1;
+    }
 
     /* Selectivity: dominant > 4x second in each group */
     int row_ok = (second_row_mag == 0 || max_row_mag > second_row_mag * 4);
@@ -309,12 +323,13 @@ static void process_block(plcode_dtmf_dec_t *c, plcode_dtmf_result_t *result)
         break;
     }
 
-    /* Reset Goertzel accumulators for next block */
+    /* Reset Goertzel accumulators and energy for next block */
     for (i = 0; i < NUM_GOERTZEL; i++) {
         c->s1[i] = 0;
         c->s2[i] = 0;
     }
     c->sample_count = 0;
+    c->energy_sum = 0;
 }
 
 void plcode_dtmf_dec_process(plcode_dtmf_dec_t *ctx,
@@ -330,6 +345,9 @@ void plcode_dtmf_dec_process(plcode_dtmf_dec_t *ctx,
 
     for (i = 0; i < n; i++) {
         int32_t sample = (int32_t)buf[i];
+
+        /* Accumulate block energy for relative threshold check */
+        ctx->energy_sum += (int64_t)sample * sample;
 
         /* Update Goertzel filters (8 fundamental, optionally 8 harmonic) */
         for (f = 0; f < nf; f++) {
@@ -356,6 +374,7 @@ void plcode_dtmf_dec_reset(plcode_dtmf_dec_t *ctx)
         ctx->s2[i] = 0;
     }
     ctx->sample_count = 0;
+    ctx->energy_sum = 0;
     ctx->state = DTMF_ST_IDLE;
     ctx->current_digit = -1;
     ctx->hit_count = 0;
