@@ -506,22 +506,22 @@ am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
 distcleancheck_listfiles = \
   find . \( -type f -a \! \
             \( -name .nfs* -o -name .smb* -o -name .__afs* \) \) -print
-ACLOCAL = ${SHELL} '/home/brian/kerchunk/libplcode/build-aux/missing' aclocal-1.17
+ACLOCAL = ${SHELL} '/home/brian/libplcode/build-aux/missing' aclocal-1.17
 AMTAR = $${TAR-tar}
-AM_DEFAULT_VERBOSITY = 0
+AM_DEFAULT_VERBOSITY = 1
 AR = ar
-AUTOCONF = ${SHELL} '/home/brian/kerchunk/libplcode/build-aux/missing' autoconf
-AUTOHEADER = ${SHELL} '/home/brian/kerchunk/libplcode/build-aux/missing' autoheader
-AUTOMAKE = ${SHELL} '/home/brian/kerchunk/libplcode/build-aux/missing' automake-1.17
+AUTOCONF = ${SHELL} '/home/brian/libplcode/build-aux/missing' autoconf
+AUTOHEADER = ${SHELL} '/home/brian/libplcode/build-aux/missing' autoheader
+AUTOMAKE = ${SHELL} '/home/brian/libplcode/build-aux/missing' automake-1.17
 AWK = gawk
 CC = gcc
-CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
-CPPFLAGS = 
+CCDEPMODE = depmode=none
+CFLAGS = -g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -ffile-prefix-map=/home/brian/libplcode=. -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -mbranch-protection=standard -fdebug-prefix-map=/home/brian/libplcode=/usr/src/libplcode-1.0.1-1
+CPPFLAGS = -Wdate-time -D_FORTIFY_SOURCE=3
 CSCOPE = cscope
 CTAGS = ctags
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"libplcode\" -DPACKAGE_TARNAME=\"libplcode\" -DPACKAGE_VERSION=\"0.1.0\" -DPACKAGE_STRING=\"libplcode\ 0.1.0\" -DPACKAGE_BUGREPORT=\"brian@bkw.org\" -DPACKAGE_URL=\"https://github.com/briankwest/libplcode\" -DPACKAGE=\"libplcode\" -DVERSION=\"0.1.0\" -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_UNISTD_H=1 -DSTDC_HEADERS=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\" -DHAVE_LIBM=1
+DEFS = -DPACKAGE_NAME=\"libplcode\" -DPACKAGE_TARNAME=\"libplcode\" -DPACKAGE_VERSION=\"1.0.1\" -DPACKAGE_STRING=\"libplcode\ 1.0.1\" -DPACKAGE_BUGREPORT=\"brian@mcalester.net\" -DPACKAGE_URL=\"https://github.com/briankwest/libplcode\" -DPACKAGE=\"libplcode\" -DVERSION=\"1.0.1\" -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_UNISTD_H=1 -DSTDC_HEADERS=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\" -DHAVE_LIBM=1
 DEPDIR = .deps
 DLLTOOL = false
 DSYMUTIL = 
@@ -534,6 +534,7 @@ ETAGS = etags
 EXEEXT = 
 FGREP = /usr/bin/grep -F
 FILECMD = file
+GIT_HASH = 50fc896
 GREP = /usr/bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
@@ -541,7 +542,7 @@ INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LD = /usr/bin/aarch64-linux-gnu-ld
-LDFLAGS = 
+LDFLAGS = -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro -Wl,-z,now
 LIBOBJS = 
 LIBS = -lm 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -549,7 +550,7 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS = 
 LT_SYS_LIBRARY_PATH = 
-MAKEINFO = ${SHELL} '/home/brian/kerchunk/libplcode/build-aux/missing' makeinfo
+MAKEINFO = ${SHELL} '/home/brian/libplcode/build-aux/missing' makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = mkdir -p
 NM = /usr/bin/nm -B
@@ -559,23 +560,23 @@ OBJEXT = o
 OTOOL = 
 OTOOL64 = 
 PACKAGE = libplcode
-PACKAGE_BUGREPORT = brian@bkw.org
+PACKAGE_BUGREPORT = brian@mcalester.net
 PACKAGE_NAME = libplcode
-PACKAGE_STRING = libplcode 0.1.0
+PACKAGE_STRING = libplcode 1.0.1
 PACKAGE_TARNAME = libplcode
 PACKAGE_URL = https://github.com/briankwest/libplcode
-PACKAGE_VERSION = 0.1.0
+PACKAGE_VERSION = 1.0.1
 PATH_SEPARATOR = :
 RANLIB = ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = strip
-VERSION = 0.1.0
-abs_builddir = /home/brian/kerchunk/libplcode
-abs_srcdir = /home/brian/kerchunk/libplcode
-abs_top_builddir = /home/brian/kerchunk/libplcode
-abs_top_srcdir = /home/brian/kerchunk/libplcode
+VERSION = 1.0.1
+abs_builddir = /home/brian/libplcode
+abs_srcdir = /home/brian/libplcode
+abs_top_builddir = /home/brian/libplcode
+abs_top_srcdir = /home/brian/libplcode
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
@@ -588,7 +589,7 @@ am__untar = $${TAR-tar} xf -
 am__xargs_n = xargs -n
 bindir = ${exec_prefix}/bin
 build = aarch64-unknown-linux-gnu
-build_alias = 
+build_alias = aarch64-linux-gnu
 build_cpu = aarch64
 build_os = linux-gnu
 build_vendor = unknown
@@ -605,24 +606,24 @@ host_os = linux-gnu
 host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
-infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/brian/kerchunk/libplcode/build-aux/install-sh
-libdir = ${exec_prefix}/lib
+infodir = ${prefix}/share/info
+install_sh = ${SHELL} /home/brian/libplcode/build-aux/install-sh
+libdir = ${prefix}/lib/aarch64-linux-gnu
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
-localstatedir = ${prefix}/var
-mandir = ${datarootdir}/man
+localstatedir = /var
+mandir = ${prefix}/share/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /usr
 program_transform_name = s,x,x,
 psdir = ${docdir}
-runstatedir = ${localstatedir}/run
+runstatedir = /run
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
-sysconfdir = ${prefix}/etc
+sysconfdir = /etc
 target_alias = 
 top_build_prefix = 
 top_builddir = .
@@ -657,7 +658,7 @@ libplcode_la_SOURCES = \
 	src/plcode_courtesy_enc.c \
 	src/plcode_tone_enc.c
 
-libplcode_la_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src
+libplcode_la_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src -DPLCODE_GIT_HASH=\"50fc896\"
 libplcode_la_LDFLAGS = -version-info 0:0:0
 libplcode_la_LIBADD = -lm
 
@@ -683,7 +684,7 @@ test_plcode_SOURCES = \
 	tests/test_mdc1200.c \
 	tests/test_courtesy.c
 
-test_plcode_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src
+test_plcode_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src -DPLCODE_GIT_HASH=\"50fc896\"
 test_plcode_LDADD = libplcode.la -lm
 all: all-am
 
@@ -864,43 +865,43 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_golay.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_tables.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Plo # am--include-marker
-include src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Plo # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_courtesy.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_ctcss.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_cwid.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_dcs.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_dtmf.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_fskcw.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_golay.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_main.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_mcw.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_mdc1200.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_selcall.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_toneburst.Po # am--include-marker
-include tests/$(DEPDIR)/test_plcode-test_twotone.Po # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_golay.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_tables.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Plo # am--include-marker
+#include src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Plo # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_courtesy.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_ctcss.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_cwid.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_dcs.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_dtmf.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_fskcw.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_golay.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_main.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_mcw.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_mdc1200.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_selcall.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_toneburst.Po # am--include-marker
+#include tests/$(DEPDIR)/test_plcode-test_twotone.Po # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -909,378 +910,378 @@ $(am__depfiles_remade):
 am--depfiles: $(am__depfiles_remade)
 
 .c.o:
-	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Po
-#	$(AM_V_CC)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+#	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Po
+#	$(AM_V_CC)source='$<' object='$@' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Po
-#	$(AM_V_CC)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+#	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Po
+#	$(AM_V_CC)source='$<' object='$@' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
-	$(am__mv) $$depbase.Tpo $$depbase.Plo
-#	$(AM_V_CC)source='$<' object='$@' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LTCOMPILE) -c -o $@ $<
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+#	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+#	$(am__mv) $$depbase.Tpo $$depbase.Plo
+#	$(AM_V_CC)source='$<' object='$@' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LTCOMPILE) -c -o $@ $<
 
 src/libplcode_la-plcode_tables.lo: src/plcode_tables.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_tables.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_tables.Tpo -c -o src/libplcode_la-plcode_tables.lo `test -f 'src/plcode_tables.c' || echo '$(srcdir)/'`src/plcode_tables.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_tables.Tpo src/$(DEPDIR)/libplcode_la-plcode_tables.Plo
-#	$(AM_V_CC)source='src/plcode_tables.c' object='src/libplcode_la-plcode_tables.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_tables.lo `test -f 'src/plcode_tables.c' || echo '$(srcdir)/'`src/plcode_tables.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_tables.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_tables.Tpo -c -o src/libplcode_la-plcode_tables.lo `test -f 'src/plcode_tables.c' || echo '$(srcdir)/'`src/plcode_tables.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_tables.Tpo src/$(DEPDIR)/libplcode_la-plcode_tables.Plo
+#	$(AM_V_CC)source='src/plcode_tables.c' object='src/libplcode_la-plcode_tables.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_tables.lo `test -f 'src/plcode_tables.c' || echo '$(srcdir)/'`src/plcode_tables.c
 
 src/libplcode_la-plcode_golay.lo: src/plcode_golay.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_golay.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_golay.Tpo -c -o src/libplcode_la-plcode_golay.lo `test -f 'src/plcode_golay.c' || echo '$(srcdir)/'`src/plcode_golay.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_golay.Tpo src/$(DEPDIR)/libplcode_la-plcode_golay.Plo
-#	$(AM_V_CC)source='src/plcode_golay.c' object='src/libplcode_la-plcode_golay.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_golay.lo `test -f 'src/plcode_golay.c' || echo '$(srcdir)/'`src/plcode_golay.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_golay.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_golay.Tpo -c -o src/libplcode_la-plcode_golay.lo `test -f 'src/plcode_golay.c' || echo '$(srcdir)/'`src/plcode_golay.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_golay.Tpo src/$(DEPDIR)/libplcode_la-plcode_golay.Plo
+#	$(AM_V_CC)source='src/plcode_golay.c' object='src/libplcode_la-plcode_golay.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_golay.lo `test -f 'src/plcode_golay.c' || echo '$(srcdir)/'`src/plcode_golay.c
 
 src/libplcode_la-plcode_ctcss_enc.lo: src/plcode_ctcss_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_ctcss_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Tpo -c -o src/libplcode_la-plcode_ctcss_enc.lo `test -f 'src/plcode_ctcss_enc.c' || echo '$(srcdir)/'`src/plcode_ctcss_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Plo
-#	$(AM_V_CC)source='src/plcode_ctcss_enc.c' object='src/libplcode_la-plcode_ctcss_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_ctcss_enc.lo `test -f 'src/plcode_ctcss_enc.c' || echo '$(srcdir)/'`src/plcode_ctcss_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_ctcss_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Tpo -c -o src/libplcode_la-plcode_ctcss_enc.lo `test -f 'src/plcode_ctcss_enc.c' || echo '$(srcdir)/'`src/plcode_ctcss_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_ctcss_enc.Plo
+#	$(AM_V_CC)source='src/plcode_ctcss_enc.c' object='src/libplcode_la-plcode_ctcss_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_ctcss_enc.lo `test -f 'src/plcode_ctcss_enc.c' || echo '$(srcdir)/'`src/plcode_ctcss_enc.c
 
 src/libplcode_la-plcode_ctcss_dec.lo: src/plcode_ctcss_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_ctcss_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Tpo -c -o src/libplcode_la-plcode_ctcss_dec.lo `test -f 'src/plcode_ctcss_dec.c' || echo '$(srcdir)/'`src/plcode_ctcss_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Plo
-#	$(AM_V_CC)source='src/plcode_ctcss_dec.c' object='src/libplcode_la-plcode_ctcss_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_ctcss_dec.lo `test -f 'src/plcode_ctcss_dec.c' || echo '$(srcdir)/'`src/plcode_ctcss_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_ctcss_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Tpo -c -o src/libplcode_la-plcode_ctcss_dec.lo `test -f 'src/plcode_ctcss_dec.c' || echo '$(srcdir)/'`src/plcode_ctcss_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_ctcss_dec.Plo
+#	$(AM_V_CC)source='src/plcode_ctcss_dec.c' object='src/libplcode_la-plcode_ctcss_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_ctcss_dec.lo `test -f 'src/plcode_ctcss_dec.c' || echo '$(srcdir)/'`src/plcode_ctcss_dec.c
 
 src/libplcode_la-plcode_dcs_enc.lo: src/plcode_dcs_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dcs_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Tpo -c -o src/libplcode_la-plcode_dcs_enc.lo `test -f 'src/plcode_dcs_enc.c' || echo '$(srcdir)/'`src/plcode_dcs_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Plo
-#	$(AM_V_CC)source='src/plcode_dcs_enc.c' object='src/libplcode_la-plcode_dcs_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dcs_enc.lo `test -f 'src/plcode_dcs_enc.c' || echo '$(srcdir)/'`src/plcode_dcs_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dcs_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Tpo -c -o src/libplcode_la-plcode_dcs_enc.lo `test -f 'src/plcode_dcs_enc.c' || echo '$(srcdir)/'`src/plcode_dcs_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_dcs_enc.Plo
+#	$(AM_V_CC)source='src/plcode_dcs_enc.c' object='src/libplcode_la-plcode_dcs_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dcs_enc.lo `test -f 'src/plcode_dcs_enc.c' || echo '$(srcdir)/'`src/plcode_dcs_enc.c
 
 src/libplcode_la-plcode_dcs_dec.lo: src/plcode_dcs_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dcs_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Tpo -c -o src/libplcode_la-plcode_dcs_dec.lo `test -f 'src/plcode_dcs_dec.c' || echo '$(srcdir)/'`src/plcode_dcs_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Plo
-#	$(AM_V_CC)source='src/plcode_dcs_dec.c' object='src/libplcode_la-plcode_dcs_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dcs_dec.lo `test -f 'src/plcode_dcs_dec.c' || echo '$(srcdir)/'`src/plcode_dcs_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dcs_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Tpo -c -o src/libplcode_la-plcode_dcs_dec.lo `test -f 'src/plcode_dcs_dec.c' || echo '$(srcdir)/'`src/plcode_dcs_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_dcs_dec.Plo
+#	$(AM_V_CC)source='src/plcode_dcs_dec.c' object='src/libplcode_la-plcode_dcs_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dcs_dec.lo `test -f 'src/plcode_dcs_dec.c' || echo '$(srcdir)/'`src/plcode_dcs_dec.c
 
 src/libplcode_la-plcode_dtmf_enc.lo: src/plcode_dtmf_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dtmf_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Tpo -c -o src/libplcode_la-plcode_dtmf_enc.lo `test -f 'src/plcode_dtmf_enc.c' || echo '$(srcdir)/'`src/plcode_dtmf_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Plo
-#	$(AM_V_CC)source='src/plcode_dtmf_enc.c' object='src/libplcode_la-plcode_dtmf_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dtmf_enc.lo `test -f 'src/plcode_dtmf_enc.c' || echo '$(srcdir)/'`src/plcode_dtmf_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dtmf_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Tpo -c -o src/libplcode_la-plcode_dtmf_enc.lo `test -f 'src/plcode_dtmf_enc.c' || echo '$(srcdir)/'`src/plcode_dtmf_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_dtmf_enc.Plo
+#	$(AM_V_CC)source='src/plcode_dtmf_enc.c' object='src/libplcode_la-plcode_dtmf_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dtmf_enc.lo `test -f 'src/plcode_dtmf_enc.c' || echo '$(srcdir)/'`src/plcode_dtmf_enc.c
 
 src/libplcode_la-plcode_dtmf_dec.lo: src/plcode_dtmf_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dtmf_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Tpo -c -o src/libplcode_la-plcode_dtmf_dec.lo `test -f 'src/plcode_dtmf_dec.c' || echo '$(srcdir)/'`src/plcode_dtmf_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Plo
-#	$(AM_V_CC)source='src/plcode_dtmf_dec.c' object='src/libplcode_la-plcode_dtmf_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dtmf_dec.lo `test -f 'src/plcode_dtmf_dec.c' || echo '$(srcdir)/'`src/plcode_dtmf_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_dtmf_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Tpo -c -o src/libplcode_la-plcode_dtmf_dec.lo `test -f 'src/plcode_dtmf_dec.c' || echo '$(srcdir)/'`src/plcode_dtmf_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_dtmf_dec.Plo
+#	$(AM_V_CC)source='src/plcode_dtmf_dec.c' object='src/libplcode_la-plcode_dtmf_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_dtmf_dec.lo `test -f 'src/plcode_dtmf_dec.c' || echo '$(srcdir)/'`src/plcode_dtmf_dec.c
 
 src/libplcode_la-plcode_cwid_enc.lo: src/plcode_cwid_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_cwid_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Tpo -c -o src/libplcode_la-plcode_cwid_enc.lo `test -f 'src/plcode_cwid_enc.c' || echo '$(srcdir)/'`src/plcode_cwid_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Plo
-#	$(AM_V_CC)source='src/plcode_cwid_enc.c' object='src/libplcode_la-plcode_cwid_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_cwid_enc.lo `test -f 'src/plcode_cwid_enc.c' || echo '$(srcdir)/'`src/plcode_cwid_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_cwid_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Tpo -c -o src/libplcode_la-plcode_cwid_enc.lo `test -f 'src/plcode_cwid_enc.c' || echo '$(srcdir)/'`src/plcode_cwid_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_cwid_enc.Plo
+#	$(AM_V_CC)source='src/plcode_cwid_enc.c' object='src/libplcode_la-plcode_cwid_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_cwid_enc.lo `test -f 'src/plcode_cwid_enc.c' || echo '$(srcdir)/'`src/plcode_cwid_enc.c
 
 src/libplcode_la-plcode_cwid_dec.lo: src/plcode_cwid_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_cwid_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Tpo -c -o src/libplcode_la-plcode_cwid_dec.lo `test -f 'src/plcode_cwid_dec.c' || echo '$(srcdir)/'`src/plcode_cwid_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Plo
-#	$(AM_V_CC)source='src/plcode_cwid_dec.c' object='src/libplcode_la-plcode_cwid_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_cwid_dec.lo `test -f 'src/plcode_cwid_dec.c' || echo '$(srcdir)/'`src/plcode_cwid_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_cwid_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Tpo -c -o src/libplcode_la-plcode_cwid_dec.lo `test -f 'src/plcode_cwid_dec.c' || echo '$(srcdir)/'`src/plcode_cwid_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_cwid_dec.Plo
+#	$(AM_V_CC)source='src/plcode_cwid_dec.c' object='src/libplcode_la-plcode_cwid_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_cwid_dec.lo `test -f 'src/plcode_cwid_dec.c' || echo '$(srcdir)/'`src/plcode_cwid_dec.c
 
 src/libplcode_la-plcode_mcw_enc.lo: src/plcode_mcw_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mcw_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Tpo -c -o src/libplcode_la-plcode_mcw_enc.lo `test -f 'src/plcode_mcw_enc.c' || echo '$(srcdir)/'`src/plcode_mcw_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Plo
-#	$(AM_V_CC)source='src/plcode_mcw_enc.c' object='src/libplcode_la-plcode_mcw_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mcw_enc.lo `test -f 'src/plcode_mcw_enc.c' || echo '$(srcdir)/'`src/plcode_mcw_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mcw_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Tpo -c -o src/libplcode_la-plcode_mcw_enc.lo `test -f 'src/plcode_mcw_enc.c' || echo '$(srcdir)/'`src/plcode_mcw_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_mcw_enc.Plo
+#	$(AM_V_CC)source='src/plcode_mcw_enc.c' object='src/libplcode_la-plcode_mcw_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mcw_enc.lo `test -f 'src/plcode_mcw_enc.c' || echo '$(srcdir)/'`src/plcode_mcw_enc.c
 
 src/libplcode_la-plcode_mcw_dec.lo: src/plcode_mcw_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mcw_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Tpo -c -o src/libplcode_la-plcode_mcw_dec.lo `test -f 'src/plcode_mcw_dec.c' || echo '$(srcdir)/'`src/plcode_mcw_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Plo
-#	$(AM_V_CC)source='src/plcode_mcw_dec.c' object='src/libplcode_la-plcode_mcw_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mcw_dec.lo `test -f 'src/plcode_mcw_dec.c' || echo '$(srcdir)/'`src/plcode_mcw_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mcw_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Tpo -c -o src/libplcode_la-plcode_mcw_dec.lo `test -f 'src/plcode_mcw_dec.c' || echo '$(srcdir)/'`src/plcode_mcw_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_mcw_dec.Plo
+#	$(AM_V_CC)source='src/plcode_mcw_dec.c' object='src/libplcode_la-plcode_mcw_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mcw_dec.lo `test -f 'src/plcode_mcw_dec.c' || echo '$(srcdir)/'`src/plcode_mcw_dec.c
 
 src/libplcode_la-plcode_fskcw_enc.lo: src/plcode_fskcw_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_fskcw_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Tpo -c -o src/libplcode_la-plcode_fskcw_enc.lo `test -f 'src/plcode_fskcw_enc.c' || echo '$(srcdir)/'`src/plcode_fskcw_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Plo
-#	$(AM_V_CC)source='src/plcode_fskcw_enc.c' object='src/libplcode_la-plcode_fskcw_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_fskcw_enc.lo `test -f 'src/plcode_fskcw_enc.c' || echo '$(srcdir)/'`src/plcode_fskcw_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_fskcw_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Tpo -c -o src/libplcode_la-plcode_fskcw_enc.lo `test -f 'src/plcode_fskcw_enc.c' || echo '$(srcdir)/'`src/plcode_fskcw_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_fskcw_enc.Plo
+#	$(AM_V_CC)source='src/plcode_fskcw_enc.c' object='src/libplcode_la-plcode_fskcw_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_fskcw_enc.lo `test -f 'src/plcode_fskcw_enc.c' || echo '$(srcdir)/'`src/plcode_fskcw_enc.c
 
 src/libplcode_la-plcode_fskcw_dec.lo: src/plcode_fskcw_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_fskcw_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Tpo -c -o src/libplcode_la-plcode_fskcw_dec.lo `test -f 'src/plcode_fskcw_dec.c' || echo '$(srcdir)/'`src/plcode_fskcw_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Plo
-#	$(AM_V_CC)source='src/plcode_fskcw_dec.c' object='src/libplcode_la-plcode_fskcw_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_fskcw_dec.lo `test -f 'src/plcode_fskcw_dec.c' || echo '$(srcdir)/'`src/plcode_fskcw_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_fskcw_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Tpo -c -o src/libplcode_la-plcode_fskcw_dec.lo `test -f 'src/plcode_fskcw_dec.c' || echo '$(srcdir)/'`src/plcode_fskcw_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_fskcw_dec.Plo
+#	$(AM_V_CC)source='src/plcode_fskcw_dec.c' object='src/libplcode_la-plcode_fskcw_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_fskcw_dec.lo `test -f 'src/plcode_fskcw_dec.c' || echo '$(srcdir)/'`src/plcode_fskcw_dec.c
 
 src/libplcode_la-plcode_twotone_enc.lo: src/plcode_twotone_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_twotone_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Tpo -c -o src/libplcode_la-plcode_twotone_enc.lo `test -f 'src/plcode_twotone_enc.c' || echo '$(srcdir)/'`src/plcode_twotone_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Plo
-#	$(AM_V_CC)source='src/plcode_twotone_enc.c' object='src/libplcode_la-plcode_twotone_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_twotone_enc.lo `test -f 'src/plcode_twotone_enc.c' || echo '$(srcdir)/'`src/plcode_twotone_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_twotone_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Tpo -c -o src/libplcode_la-plcode_twotone_enc.lo `test -f 'src/plcode_twotone_enc.c' || echo '$(srcdir)/'`src/plcode_twotone_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_twotone_enc.Plo
+#	$(AM_V_CC)source='src/plcode_twotone_enc.c' object='src/libplcode_la-plcode_twotone_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_twotone_enc.lo `test -f 'src/plcode_twotone_enc.c' || echo '$(srcdir)/'`src/plcode_twotone_enc.c
 
 src/libplcode_la-plcode_twotone_dec.lo: src/plcode_twotone_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_twotone_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Tpo -c -o src/libplcode_la-plcode_twotone_dec.lo `test -f 'src/plcode_twotone_dec.c' || echo '$(srcdir)/'`src/plcode_twotone_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Plo
-#	$(AM_V_CC)source='src/plcode_twotone_dec.c' object='src/libplcode_la-plcode_twotone_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_twotone_dec.lo `test -f 'src/plcode_twotone_dec.c' || echo '$(srcdir)/'`src/plcode_twotone_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_twotone_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Tpo -c -o src/libplcode_la-plcode_twotone_dec.lo `test -f 'src/plcode_twotone_dec.c' || echo '$(srcdir)/'`src/plcode_twotone_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_twotone_dec.Plo
+#	$(AM_V_CC)source='src/plcode_twotone_dec.c' object='src/libplcode_la-plcode_twotone_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_twotone_dec.lo `test -f 'src/plcode_twotone_dec.c' || echo '$(srcdir)/'`src/plcode_twotone_dec.c
 
 src/libplcode_la-plcode_selcall_enc.lo: src/plcode_selcall_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_selcall_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Tpo -c -o src/libplcode_la-plcode_selcall_enc.lo `test -f 'src/plcode_selcall_enc.c' || echo '$(srcdir)/'`src/plcode_selcall_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Plo
-#	$(AM_V_CC)source='src/plcode_selcall_enc.c' object='src/libplcode_la-plcode_selcall_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_selcall_enc.lo `test -f 'src/plcode_selcall_enc.c' || echo '$(srcdir)/'`src/plcode_selcall_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_selcall_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Tpo -c -o src/libplcode_la-plcode_selcall_enc.lo `test -f 'src/plcode_selcall_enc.c' || echo '$(srcdir)/'`src/plcode_selcall_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_selcall_enc.Plo
+#	$(AM_V_CC)source='src/plcode_selcall_enc.c' object='src/libplcode_la-plcode_selcall_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_selcall_enc.lo `test -f 'src/plcode_selcall_enc.c' || echo '$(srcdir)/'`src/plcode_selcall_enc.c
 
 src/libplcode_la-plcode_selcall_dec.lo: src/plcode_selcall_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_selcall_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Tpo -c -o src/libplcode_la-plcode_selcall_dec.lo `test -f 'src/plcode_selcall_dec.c' || echo '$(srcdir)/'`src/plcode_selcall_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Plo
-#	$(AM_V_CC)source='src/plcode_selcall_dec.c' object='src/libplcode_la-plcode_selcall_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_selcall_dec.lo `test -f 'src/plcode_selcall_dec.c' || echo '$(srcdir)/'`src/plcode_selcall_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_selcall_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Tpo -c -o src/libplcode_la-plcode_selcall_dec.lo `test -f 'src/plcode_selcall_dec.c' || echo '$(srcdir)/'`src/plcode_selcall_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_selcall_dec.Plo
+#	$(AM_V_CC)source='src/plcode_selcall_dec.c' object='src/libplcode_la-plcode_selcall_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_selcall_dec.lo `test -f 'src/plcode_selcall_dec.c' || echo '$(srcdir)/'`src/plcode_selcall_dec.c
 
 src/libplcode_la-plcode_toneburst_enc.lo: src/plcode_toneburst_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_toneburst_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Tpo -c -o src/libplcode_la-plcode_toneburst_enc.lo `test -f 'src/plcode_toneburst_enc.c' || echo '$(srcdir)/'`src/plcode_toneburst_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Plo
-#	$(AM_V_CC)source='src/plcode_toneburst_enc.c' object='src/libplcode_la-plcode_toneburst_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_toneburst_enc.lo `test -f 'src/plcode_toneburst_enc.c' || echo '$(srcdir)/'`src/plcode_toneburst_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_toneburst_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Tpo -c -o src/libplcode_la-plcode_toneburst_enc.lo `test -f 'src/plcode_toneburst_enc.c' || echo '$(srcdir)/'`src/plcode_toneburst_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_toneburst_enc.Plo
+#	$(AM_V_CC)source='src/plcode_toneburst_enc.c' object='src/libplcode_la-plcode_toneburst_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_toneburst_enc.lo `test -f 'src/plcode_toneburst_enc.c' || echo '$(srcdir)/'`src/plcode_toneburst_enc.c
 
 src/libplcode_la-plcode_toneburst_dec.lo: src/plcode_toneburst_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_toneburst_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Tpo -c -o src/libplcode_la-plcode_toneburst_dec.lo `test -f 'src/plcode_toneburst_dec.c' || echo '$(srcdir)/'`src/plcode_toneburst_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Plo
-#	$(AM_V_CC)source='src/plcode_toneburst_dec.c' object='src/libplcode_la-plcode_toneburst_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_toneburst_dec.lo `test -f 'src/plcode_toneburst_dec.c' || echo '$(srcdir)/'`src/plcode_toneburst_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_toneburst_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Tpo -c -o src/libplcode_la-plcode_toneburst_dec.lo `test -f 'src/plcode_toneburst_dec.c' || echo '$(srcdir)/'`src/plcode_toneburst_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_toneburst_dec.Plo
+#	$(AM_V_CC)source='src/plcode_toneburst_dec.c' object='src/libplcode_la-plcode_toneburst_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_toneburst_dec.lo `test -f 'src/plcode_toneburst_dec.c' || echo '$(srcdir)/'`src/plcode_toneburst_dec.c
 
 src/libplcode_la-plcode_mdc1200_enc.lo: src/plcode_mdc1200_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mdc1200_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Tpo -c -o src/libplcode_la-plcode_mdc1200_enc.lo `test -f 'src/plcode_mdc1200_enc.c' || echo '$(srcdir)/'`src/plcode_mdc1200_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Plo
-#	$(AM_V_CC)source='src/plcode_mdc1200_enc.c' object='src/libplcode_la-plcode_mdc1200_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mdc1200_enc.lo `test -f 'src/plcode_mdc1200_enc.c' || echo '$(srcdir)/'`src/plcode_mdc1200_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mdc1200_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Tpo -c -o src/libplcode_la-plcode_mdc1200_enc.lo `test -f 'src/plcode_mdc1200_enc.c' || echo '$(srcdir)/'`src/plcode_mdc1200_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_mdc1200_enc.Plo
+#	$(AM_V_CC)source='src/plcode_mdc1200_enc.c' object='src/libplcode_la-plcode_mdc1200_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mdc1200_enc.lo `test -f 'src/plcode_mdc1200_enc.c' || echo '$(srcdir)/'`src/plcode_mdc1200_enc.c
 
 src/libplcode_la-plcode_mdc1200_dec.lo: src/plcode_mdc1200_dec.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mdc1200_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Tpo -c -o src/libplcode_la-plcode_mdc1200_dec.lo `test -f 'src/plcode_mdc1200_dec.c' || echo '$(srcdir)/'`src/plcode_mdc1200_dec.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Plo
-#	$(AM_V_CC)source='src/plcode_mdc1200_dec.c' object='src/libplcode_la-plcode_mdc1200_dec.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mdc1200_dec.lo `test -f 'src/plcode_mdc1200_dec.c' || echo '$(srcdir)/'`src/plcode_mdc1200_dec.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_mdc1200_dec.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Tpo -c -o src/libplcode_la-plcode_mdc1200_dec.lo `test -f 'src/plcode_mdc1200_dec.c' || echo '$(srcdir)/'`src/plcode_mdc1200_dec.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Tpo src/$(DEPDIR)/libplcode_la-plcode_mdc1200_dec.Plo
+#	$(AM_V_CC)source='src/plcode_mdc1200_dec.c' object='src/libplcode_la-plcode_mdc1200_dec.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_mdc1200_dec.lo `test -f 'src/plcode_mdc1200_dec.c' || echo '$(srcdir)/'`src/plcode_mdc1200_dec.c
 
 src/libplcode_la-plcode_courtesy_enc.lo: src/plcode_courtesy_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_courtesy_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Tpo -c -o src/libplcode_la-plcode_courtesy_enc.lo `test -f 'src/plcode_courtesy_enc.c' || echo '$(srcdir)/'`src/plcode_courtesy_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Plo
-#	$(AM_V_CC)source='src/plcode_courtesy_enc.c' object='src/libplcode_la-plcode_courtesy_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_courtesy_enc.lo `test -f 'src/plcode_courtesy_enc.c' || echo '$(srcdir)/'`src/plcode_courtesy_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_courtesy_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Tpo -c -o src/libplcode_la-plcode_courtesy_enc.lo `test -f 'src/plcode_courtesy_enc.c' || echo '$(srcdir)/'`src/plcode_courtesy_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_courtesy_enc.Plo
+#	$(AM_V_CC)source='src/plcode_courtesy_enc.c' object='src/libplcode_la-plcode_courtesy_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_courtesy_enc.lo `test -f 'src/plcode_courtesy_enc.c' || echo '$(srcdir)/'`src/plcode_courtesy_enc.c
 
 src/libplcode_la-plcode_tone_enc.lo: src/plcode_tone_enc.c
-	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_tone_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Tpo -c -o src/libplcode_la-plcode_tone_enc.lo `test -f 'src/plcode_tone_enc.c' || echo '$(srcdir)/'`src/plcode_tone_enc.c
-	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Plo
-#	$(AM_V_CC)source='src/plcode_tone_enc.c' object='src/libplcode_la-plcode_tone_enc.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_tone_enc.lo `test -f 'src/plcode_tone_enc.c' || echo '$(srcdir)/'`src/plcode_tone_enc.c
+#	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -MT src/libplcode_la-plcode_tone_enc.lo -MD -MP -MF src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Tpo -c -o src/libplcode_la-plcode_tone_enc.lo `test -f 'src/plcode_tone_enc.c' || echo '$(srcdir)/'`src/plcode_tone_enc.c
+#	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Tpo src/$(DEPDIR)/libplcode_la-plcode_tone_enc.Plo
+#	$(AM_V_CC)source='src/plcode_tone_enc.c' object='src/libplcode_la-plcode_tone_enc.lo' libtool=yes 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libplcode_la_CFLAGS) $(CFLAGS) -c -o src/libplcode_la-plcode_tone_enc.lo `test -f 'src/plcode_tone_enc.c' || echo '$(srcdir)/'`src/plcode_tone_enc.c
 
 tests/test_plcode-test_main.o: tests/test_main.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_main.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_main.Tpo -c -o tests/test_plcode-test_main.o `test -f 'tests/test_main.c' || echo '$(srcdir)/'`tests/test_main.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_main.Tpo tests/$(DEPDIR)/test_plcode-test_main.Po
-#	$(AM_V_CC)source='tests/test_main.c' object='tests/test_plcode-test_main.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_main.o `test -f 'tests/test_main.c' || echo '$(srcdir)/'`tests/test_main.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_main.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_main.Tpo -c -o tests/test_plcode-test_main.o `test -f 'tests/test_main.c' || echo '$(srcdir)/'`tests/test_main.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_main.Tpo tests/$(DEPDIR)/test_plcode-test_main.Po
+#	$(AM_V_CC)source='tests/test_main.c' object='tests/test_plcode-test_main.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_main.o `test -f 'tests/test_main.c' || echo '$(srcdir)/'`tests/test_main.c
 
 tests/test_plcode-test_main.obj: tests/test_main.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_main.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_main.Tpo -c -o tests/test_plcode-test_main.obj `if test -f 'tests/test_main.c'; then $(CYGPATH_W) 'tests/test_main.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_main.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_main.Tpo tests/$(DEPDIR)/test_plcode-test_main.Po
-#	$(AM_V_CC)source='tests/test_main.c' object='tests/test_plcode-test_main.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_main.obj `if test -f 'tests/test_main.c'; then $(CYGPATH_W) 'tests/test_main.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_main.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_main.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_main.Tpo -c -o tests/test_plcode-test_main.obj `if test -f 'tests/test_main.c'; then $(CYGPATH_W) 'tests/test_main.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_main.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_main.Tpo tests/$(DEPDIR)/test_plcode-test_main.Po
+#	$(AM_V_CC)source='tests/test_main.c' object='tests/test_plcode-test_main.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_main.obj `if test -f 'tests/test_main.c'; then $(CYGPATH_W) 'tests/test_main.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_main.c'; fi`
 
 tests/test_plcode-test_golay.o: tests/test_golay.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_golay.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_golay.Tpo -c -o tests/test_plcode-test_golay.o `test -f 'tests/test_golay.c' || echo '$(srcdir)/'`tests/test_golay.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_golay.Tpo tests/$(DEPDIR)/test_plcode-test_golay.Po
-#	$(AM_V_CC)source='tests/test_golay.c' object='tests/test_plcode-test_golay.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_golay.o `test -f 'tests/test_golay.c' || echo '$(srcdir)/'`tests/test_golay.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_golay.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_golay.Tpo -c -o tests/test_plcode-test_golay.o `test -f 'tests/test_golay.c' || echo '$(srcdir)/'`tests/test_golay.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_golay.Tpo tests/$(DEPDIR)/test_plcode-test_golay.Po
+#	$(AM_V_CC)source='tests/test_golay.c' object='tests/test_plcode-test_golay.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_golay.o `test -f 'tests/test_golay.c' || echo '$(srcdir)/'`tests/test_golay.c
 
 tests/test_plcode-test_golay.obj: tests/test_golay.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_golay.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_golay.Tpo -c -o tests/test_plcode-test_golay.obj `if test -f 'tests/test_golay.c'; then $(CYGPATH_W) 'tests/test_golay.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_golay.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_golay.Tpo tests/$(DEPDIR)/test_plcode-test_golay.Po
-#	$(AM_V_CC)source='tests/test_golay.c' object='tests/test_plcode-test_golay.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_golay.obj `if test -f 'tests/test_golay.c'; then $(CYGPATH_W) 'tests/test_golay.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_golay.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_golay.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_golay.Tpo -c -o tests/test_plcode-test_golay.obj `if test -f 'tests/test_golay.c'; then $(CYGPATH_W) 'tests/test_golay.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_golay.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_golay.Tpo tests/$(DEPDIR)/test_plcode-test_golay.Po
+#	$(AM_V_CC)source='tests/test_golay.c' object='tests/test_plcode-test_golay.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_golay.obj `if test -f 'tests/test_golay.c'; then $(CYGPATH_W) 'tests/test_golay.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_golay.c'; fi`
 
 tests/test_plcode-test_ctcss.o: tests/test_ctcss.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_ctcss.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo -c -o tests/test_plcode-test_ctcss.o `test -f 'tests/test_ctcss.c' || echo '$(srcdir)/'`tests/test_ctcss.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo tests/$(DEPDIR)/test_plcode-test_ctcss.Po
-#	$(AM_V_CC)source='tests/test_ctcss.c' object='tests/test_plcode-test_ctcss.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_ctcss.o `test -f 'tests/test_ctcss.c' || echo '$(srcdir)/'`tests/test_ctcss.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_ctcss.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo -c -o tests/test_plcode-test_ctcss.o `test -f 'tests/test_ctcss.c' || echo '$(srcdir)/'`tests/test_ctcss.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo tests/$(DEPDIR)/test_plcode-test_ctcss.Po
+#	$(AM_V_CC)source='tests/test_ctcss.c' object='tests/test_plcode-test_ctcss.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_ctcss.o `test -f 'tests/test_ctcss.c' || echo '$(srcdir)/'`tests/test_ctcss.c
 
 tests/test_plcode-test_ctcss.obj: tests/test_ctcss.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_ctcss.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo -c -o tests/test_plcode-test_ctcss.obj `if test -f 'tests/test_ctcss.c'; then $(CYGPATH_W) 'tests/test_ctcss.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_ctcss.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo tests/$(DEPDIR)/test_plcode-test_ctcss.Po
-#	$(AM_V_CC)source='tests/test_ctcss.c' object='tests/test_plcode-test_ctcss.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_ctcss.obj `if test -f 'tests/test_ctcss.c'; then $(CYGPATH_W) 'tests/test_ctcss.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_ctcss.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_ctcss.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo -c -o tests/test_plcode-test_ctcss.obj `if test -f 'tests/test_ctcss.c'; then $(CYGPATH_W) 'tests/test_ctcss.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_ctcss.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_ctcss.Tpo tests/$(DEPDIR)/test_plcode-test_ctcss.Po
+#	$(AM_V_CC)source='tests/test_ctcss.c' object='tests/test_plcode-test_ctcss.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_ctcss.obj `if test -f 'tests/test_ctcss.c'; then $(CYGPATH_W) 'tests/test_ctcss.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_ctcss.c'; fi`
 
 tests/test_plcode-test_dcs.o: tests/test_dcs.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dcs.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dcs.Tpo -c -o tests/test_plcode-test_dcs.o `test -f 'tests/test_dcs.c' || echo '$(srcdir)/'`tests/test_dcs.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dcs.Tpo tests/$(DEPDIR)/test_plcode-test_dcs.Po
-#	$(AM_V_CC)source='tests/test_dcs.c' object='tests/test_plcode-test_dcs.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dcs.o `test -f 'tests/test_dcs.c' || echo '$(srcdir)/'`tests/test_dcs.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dcs.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dcs.Tpo -c -o tests/test_plcode-test_dcs.o `test -f 'tests/test_dcs.c' || echo '$(srcdir)/'`tests/test_dcs.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dcs.Tpo tests/$(DEPDIR)/test_plcode-test_dcs.Po
+#	$(AM_V_CC)source='tests/test_dcs.c' object='tests/test_plcode-test_dcs.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dcs.o `test -f 'tests/test_dcs.c' || echo '$(srcdir)/'`tests/test_dcs.c
 
 tests/test_plcode-test_dcs.obj: tests/test_dcs.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dcs.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dcs.Tpo -c -o tests/test_plcode-test_dcs.obj `if test -f 'tests/test_dcs.c'; then $(CYGPATH_W) 'tests/test_dcs.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dcs.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dcs.Tpo tests/$(DEPDIR)/test_plcode-test_dcs.Po
-#	$(AM_V_CC)source='tests/test_dcs.c' object='tests/test_plcode-test_dcs.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dcs.obj `if test -f 'tests/test_dcs.c'; then $(CYGPATH_W) 'tests/test_dcs.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dcs.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dcs.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dcs.Tpo -c -o tests/test_plcode-test_dcs.obj `if test -f 'tests/test_dcs.c'; then $(CYGPATH_W) 'tests/test_dcs.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dcs.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dcs.Tpo tests/$(DEPDIR)/test_plcode-test_dcs.Po
+#	$(AM_V_CC)source='tests/test_dcs.c' object='tests/test_plcode-test_dcs.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dcs.obj `if test -f 'tests/test_dcs.c'; then $(CYGPATH_W) 'tests/test_dcs.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dcs.c'; fi`
 
 tests/test_plcode-test_dtmf.o: tests/test_dtmf.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dtmf.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo -c -o tests/test_plcode-test_dtmf.o `test -f 'tests/test_dtmf.c' || echo '$(srcdir)/'`tests/test_dtmf.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo tests/$(DEPDIR)/test_plcode-test_dtmf.Po
-#	$(AM_V_CC)source='tests/test_dtmf.c' object='tests/test_plcode-test_dtmf.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dtmf.o `test -f 'tests/test_dtmf.c' || echo '$(srcdir)/'`tests/test_dtmf.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dtmf.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo -c -o tests/test_plcode-test_dtmf.o `test -f 'tests/test_dtmf.c' || echo '$(srcdir)/'`tests/test_dtmf.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo tests/$(DEPDIR)/test_plcode-test_dtmf.Po
+#	$(AM_V_CC)source='tests/test_dtmf.c' object='tests/test_plcode-test_dtmf.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dtmf.o `test -f 'tests/test_dtmf.c' || echo '$(srcdir)/'`tests/test_dtmf.c
 
 tests/test_plcode-test_dtmf.obj: tests/test_dtmf.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dtmf.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo -c -o tests/test_plcode-test_dtmf.obj `if test -f 'tests/test_dtmf.c'; then $(CYGPATH_W) 'tests/test_dtmf.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dtmf.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo tests/$(DEPDIR)/test_plcode-test_dtmf.Po
-#	$(AM_V_CC)source='tests/test_dtmf.c' object='tests/test_plcode-test_dtmf.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dtmf.obj `if test -f 'tests/test_dtmf.c'; then $(CYGPATH_W) 'tests/test_dtmf.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dtmf.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_dtmf.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo -c -o tests/test_plcode-test_dtmf.obj `if test -f 'tests/test_dtmf.c'; then $(CYGPATH_W) 'tests/test_dtmf.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dtmf.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_dtmf.Tpo tests/$(DEPDIR)/test_plcode-test_dtmf.Po
+#	$(AM_V_CC)source='tests/test_dtmf.c' object='tests/test_plcode-test_dtmf.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_dtmf.obj `if test -f 'tests/test_dtmf.c'; then $(CYGPATH_W) 'tests/test_dtmf.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_dtmf.c'; fi`
 
 tests/test_plcode-test_cwid.o: tests/test_cwid.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_cwid.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_cwid.Tpo -c -o tests/test_plcode-test_cwid.o `test -f 'tests/test_cwid.c' || echo '$(srcdir)/'`tests/test_cwid.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_cwid.Tpo tests/$(DEPDIR)/test_plcode-test_cwid.Po
-#	$(AM_V_CC)source='tests/test_cwid.c' object='tests/test_plcode-test_cwid.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_cwid.o `test -f 'tests/test_cwid.c' || echo '$(srcdir)/'`tests/test_cwid.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_cwid.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_cwid.Tpo -c -o tests/test_plcode-test_cwid.o `test -f 'tests/test_cwid.c' || echo '$(srcdir)/'`tests/test_cwid.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_cwid.Tpo tests/$(DEPDIR)/test_plcode-test_cwid.Po
+#	$(AM_V_CC)source='tests/test_cwid.c' object='tests/test_plcode-test_cwid.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_cwid.o `test -f 'tests/test_cwid.c' || echo '$(srcdir)/'`tests/test_cwid.c
 
 tests/test_plcode-test_cwid.obj: tests/test_cwid.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_cwid.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_cwid.Tpo -c -o tests/test_plcode-test_cwid.obj `if test -f 'tests/test_cwid.c'; then $(CYGPATH_W) 'tests/test_cwid.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_cwid.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_cwid.Tpo tests/$(DEPDIR)/test_plcode-test_cwid.Po
-#	$(AM_V_CC)source='tests/test_cwid.c' object='tests/test_plcode-test_cwid.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_cwid.obj `if test -f 'tests/test_cwid.c'; then $(CYGPATH_W) 'tests/test_cwid.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_cwid.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_cwid.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_cwid.Tpo -c -o tests/test_plcode-test_cwid.obj `if test -f 'tests/test_cwid.c'; then $(CYGPATH_W) 'tests/test_cwid.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_cwid.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_cwid.Tpo tests/$(DEPDIR)/test_plcode-test_cwid.Po
+#	$(AM_V_CC)source='tests/test_cwid.c' object='tests/test_plcode-test_cwid.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_cwid.obj `if test -f 'tests/test_cwid.c'; then $(CYGPATH_W) 'tests/test_cwid.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_cwid.c'; fi`
 
 tests/test_plcode-test_mcw.o: tests/test_mcw.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mcw.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mcw.Tpo -c -o tests/test_plcode-test_mcw.o `test -f 'tests/test_mcw.c' || echo '$(srcdir)/'`tests/test_mcw.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mcw.Tpo tests/$(DEPDIR)/test_plcode-test_mcw.Po
-#	$(AM_V_CC)source='tests/test_mcw.c' object='tests/test_plcode-test_mcw.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mcw.o `test -f 'tests/test_mcw.c' || echo '$(srcdir)/'`tests/test_mcw.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mcw.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mcw.Tpo -c -o tests/test_plcode-test_mcw.o `test -f 'tests/test_mcw.c' || echo '$(srcdir)/'`tests/test_mcw.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mcw.Tpo tests/$(DEPDIR)/test_plcode-test_mcw.Po
+#	$(AM_V_CC)source='tests/test_mcw.c' object='tests/test_plcode-test_mcw.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mcw.o `test -f 'tests/test_mcw.c' || echo '$(srcdir)/'`tests/test_mcw.c
 
 tests/test_plcode-test_mcw.obj: tests/test_mcw.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mcw.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mcw.Tpo -c -o tests/test_plcode-test_mcw.obj `if test -f 'tests/test_mcw.c'; then $(CYGPATH_W) 'tests/test_mcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mcw.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mcw.Tpo tests/$(DEPDIR)/test_plcode-test_mcw.Po
-#	$(AM_V_CC)source='tests/test_mcw.c' object='tests/test_plcode-test_mcw.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mcw.obj `if test -f 'tests/test_mcw.c'; then $(CYGPATH_W) 'tests/test_mcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mcw.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mcw.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mcw.Tpo -c -o tests/test_plcode-test_mcw.obj `if test -f 'tests/test_mcw.c'; then $(CYGPATH_W) 'tests/test_mcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mcw.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mcw.Tpo tests/$(DEPDIR)/test_plcode-test_mcw.Po
+#	$(AM_V_CC)source='tests/test_mcw.c' object='tests/test_plcode-test_mcw.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mcw.obj `if test -f 'tests/test_mcw.c'; then $(CYGPATH_W) 'tests/test_mcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mcw.c'; fi`
 
 tests/test_plcode-test_fskcw.o: tests/test_fskcw.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_fskcw.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo -c -o tests/test_plcode-test_fskcw.o `test -f 'tests/test_fskcw.c' || echo '$(srcdir)/'`tests/test_fskcw.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo tests/$(DEPDIR)/test_plcode-test_fskcw.Po
-#	$(AM_V_CC)source='tests/test_fskcw.c' object='tests/test_plcode-test_fskcw.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_fskcw.o `test -f 'tests/test_fskcw.c' || echo '$(srcdir)/'`tests/test_fskcw.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_fskcw.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo -c -o tests/test_plcode-test_fskcw.o `test -f 'tests/test_fskcw.c' || echo '$(srcdir)/'`tests/test_fskcw.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo tests/$(DEPDIR)/test_plcode-test_fskcw.Po
+#	$(AM_V_CC)source='tests/test_fskcw.c' object='tests/test_plcode-test_fskcw.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_fskcw.o `test -f 'tests/test_fskcw.c' || echo '$(srcdir)/'`tests/test_fskcw.c
 
 tests/test_plcode-test_fskcw.obj: tests/test_fskcw.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_fskcw.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo -c -o tests/test_plcode-test_fskcw.obj `if test -f 'tests/test_fskcw.c'; then $(CYGPATH_W) 'tests/test_fskcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_fskcw.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo tests/$(DEPDIR)/test_plcode-test_fskcw.Po
-#	$(AM_V_CC)source='tests/test_fskcw.c' object='tests/test_plcode-test_fskcw.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_fskcw.obj `if test -f 'tests/test_fskcw.c'; then $(CYGPATH_W) 'tests/test_fskcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_fskcw.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_fskcw.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo -c -o tests/test_plcode-test_fskcw.obj `if test -f 'tests/test_fskcw.c'; then $(CYGPATH_W) 'tests/test_fskcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_fskcw.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_fskcw.Tpo tests/$(DEPDIR)/test_plcode-test_fskcw.Po
+#	$(AM_V_CC)source='tests/test_fskcw.c' object='tests/test_plcode-test_fskcw.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_fskcw.obj `if test -f 'tests/test_fskcw.c'; then $(CYGPATH_W) 'tests/test_fskcw.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_fskcw.c'; fi`
 
 tests/test_plcode-test_twotone.o: tests/test_twotone.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_twotone.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_twotone.Tpo -c -o tests/test_plcode-test_twotone.o `test -f 'tests/test_twotone.c' || echo '$(srcdir)/'`tests/test_twotone.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_twotone.Tpo tests/$(DEPDIR)/test_plcode-test_twotone.Po
-#	$(AM_V_CC)source='tests/test_twotone.c' object='tests/test_plcode-test_twotone.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_twotone.o `test -f 'tests/test_twotone.c' || echo '$(srcdir)/'`tests/test_twotone.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_twotone.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_twotone.Tpo -c -o tests/test_plcode-test_twotone.o `test -f 'tests/test_twotone.c' || echo '$(srcdir)/'`tests/test_twotone.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_twotone.Tpo tests/$(DEPDIR)/test_plcode-test_twotone.Po
+#	$(AM_V_CC)source='tests/test_twotone.c' object='tests/test_plcode-test_twotone.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_twotone.o `test -f 'tests/test_twotone.c' || echo '$(srcdir)/'`tests/test_twotone.c
 
 tests/test_plcode-test_twotone.obj: tests/test_twotone.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_twotone.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_twotone.Tpo -c -o tests/test_plcode-test_twotone.obj `if test -f 'tests/test_twotone.c'; then $(CYGPATH_W) 'tests/test_twotone.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_twotone.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_twotone.Tpo tests/$(DEPDIR)/test_plcode-test_twotone.Po
-#	$(AM_V_CC)source='tests/test_twotone.c' object='tests/test_plcode-test_twotone.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_twotone.obj `if test -f 'tests/test_twotone.c'; then $(CYGPATH_W) 'tests/test_twotone.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_twotone.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_twotone.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_twotone.Tpo -c -o tests/test_plcode-test_twotone.obj `if test -f 'tests/test_twotone.c'; then $(CYGPATH_W) 'tests/test_twotone.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_twotone.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_twotone.Tpo tests/$(DEPDIR)/test_plcode-test_twotone.Po
+#	$(AM_V_CC)source='tests/test_twotone.c' object='tests/test_plcode-test_twotone.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_twotone.obj `if test -f 'tests/test_twotone.c'; then $(CYGPATH_W) 'tests/test_twotone.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_twotone.c'; fi`
 
 tests/test_plcode-test_selcall.o: tests/test_selcall.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_selcall.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_selcall.Tpo -c -o tests/test_plcode-test_selcall.o `test -f 'tests/test_selcall.c' || echo '$(srcdir)/'`tests/test_selcall.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_selcall.Tpo tests/$(DEPDIR)/test_plcode-test_selcall.Po
-#	$(AM_V_CC)source='tests/test_selcall.c' object='tests/test_plcode-test_selcall.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_selcall.o `test -f 'tests/test_selcall.c' || echo '$(srcdir)/'`tests/test_selcall.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_selcall.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_selcall.Tpo -c -o tests/test_plcode-test_selcall.o `test -f 'tests/test_selcall.c' || echo '$(srcdir)/'`tests/test_selcall.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_selcall.Tpo tests/$(DEPDIR)/test_plcode-test_selcall.Po
+#	$(AM_V_CC)source='tests/test_selcall.c' object='tests/test_plcode-test_selcall.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_selcall.o `test -f 'tests/test_selcall.c' || echo '$(srcdir)/'`tests/test_selcall.c
 
 tests/test_plcode-test_selcall.obj: tests/test_selcall.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_selcall.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_selcall.Tpo -c -o tests/test_plcode-test_selcall.obj `if test -f 'tests/test_selcall.c'; then $(CYGPATH_W) 'tests/test_selcall.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_selcall.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_selcall.Tpo tests/$(DEPDIR)/test_plcode-test_selcall.Po
-#	$(AM_V_CC)source='tests/test_selcall.c' object='tests/test_plcode-test_selcall.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_selcall.obj `if test -f 'tests/test_selcall.c'; then $(CYGPATH_W) 'tests/test_selcall.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_selcall.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_selcall.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_selcall.Tpo -c -o tests/test_plcode-test_selcall.obj `if test -f 'tests/test_selcall.c'; then $(CYGPATH_W) 'tests/test_selcall.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_selcall.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_selcall.Tpo tests/$(DEPDIR)/test_plcode-test_selcall.Po
+#	$(AM_V_CC)source='tests/test_selcall.c' object='tests/test_plcode-test_selcall.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_selcall.obj `if test -f 'tests/test_selcall.c'; then $(CYGPATH_W) 'tests/test_selcall.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_selcall.c'; fi`
 
 tests/test_plcode-test_toneburst.o: tests/test_toneburst.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_toneburst.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo -c -o tests/test_plcode-test_toneburst.o `test -f 'tests/test_toneburst.c' || echo '$(srcdir)/'`tests/test_toneburst.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo tests/$(DEPDIR)/test_plcode-test_toneburst.Po
-#	$(AM_V_CC)source='tests/test_toneburst.c' object='tests/test_plcode-test_toneburst.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_toneburst.o `test -f 'tests/test_toneburst.c' || echo '$(srcdir)/'`tests/test_toneburst.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_toneburst.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo -c -o tests/test_plcode-test_toneburst.o `test -f 'tests/test_toneburst.c' || echo '$(srcdir)/'`tests/test_toneburst.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo tests/$(DEPDIR)/test_plcode-test_toneburst.Po
+#	$(AM_V_CC)source='tests/test_toneburst.c' object='tests/test_plcode-test_toneburst.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_toneburst.o `test -f 'tests/test_toneburst.c' || echo '$(srcdir)/'`tests/test_toneburst.c
 
 tests/test_plcode-test_toneburst.obj: tests/test_toneburst.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_toneburst.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo -c -o tests/test_plcode-test_toneburst.obj `if test -f 'tests/test_toneburst.c'; then $(CYGPATH_W) 'tests/test_toneburst.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_toneburst.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo tests/$(DEPDIR)/test_plcode-test_toneburst.Po
-#	$(AM_V_CC)source='tests/test_toneburst.c' object='tests/test_plcode-test_toneburst.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_toneburst.obj `if test -f 'tests/test_toneburst.c'; then $(CYGPATH_W) 'tests/test_toneburst.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_toneburst.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_toneburst.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo -c -o tests/test_plcode-test_toneburst.obj `if test -f 'tests/test_toneburst.c'; then $(CYGPATH_W) 'tests/test_toneburst.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_toneburst.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_toneburst.Tpo tests/$(DEPDIR)/test_plcode-test_toneburst.Po
+#	$(AM_V_CC)source='tests/test_toneburst.c' object='tests/test_plcode-test_toneburst.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_toneburst.obj `if test -f 'tests/test_toneburst.c'; then $(CYGPATH_W) 'tests/test_toneburst.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_toneburst.c'; fi`
 
 tests/test_plcode-test_mdc1200.o: tests/test_mdc1200.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mdc1200.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo -c -o tests/test_plcode-test_mdc1200.o `test -f 'tests/test_mdc1200.c' || echo '$(srcdir)/'`tests/test_mdc1200.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo tests/$(DEPDIR)/test_plcode-test_mdc1200.Po
-#	$(AM_V_CC)source='tests/test_mdc1200.c' object='tests/test_plcode-test_mdc1200.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mdc1200.o `test -f 'tests/test_mdc1200.c' || echo '$(srcdir)/'`tests/test_mdc1200.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mdc1200.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo -c -o tests/test_plcode-test_mdc1200.o `test -f 'tests/test_mdc1200.c' || echo '$(srcdir)/'`tests/test_mdc1200.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo tests/$(DEPDIR)/test_plcode-test_mdc1200.Po
+#	$(AM_V_CC)source='tests/test_mdc1200.c' object='tests/test_plcode-test_mdc1200.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mdc1200.o `test -f 'tests/test_mdc1200.c' || echo '$(srcdir)/'`tests/test_mdc1200.c
 
 tests/test_plcode-test_mdc1200.obj: tests/test_mdc1200.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mdc1200.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo -c -o tests/test_plcode-test_mdc1200.obj `if test -f 'tests/test_mdc1200.c'; then $(CYGPATH_W) 'tests/test_mdc1200.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mdc1200.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo tests/$(DEPDIR)/test_plcode-test_mdc1200.Po
-#	$(AM_V_CC)source='tests/test_mdc1200.c' object='tests/test_plcode-test_mdc1200.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mdc1200.obj `if test -f 'tests/test_mdc1200.c'; then $(CYGPATH_W) 'tests/test_mdc1200.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mdc1200.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_mdc1200.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo -c -o tests/test_plcode-test_mdc1200.obj `if test -f 'tests/test_mdc1200.c'; then $(CYGPATH_W) 'tests/test_mdc1200.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mdc1200.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_mdc1200.Tpo tests/$(DEPDIR)/test_plcode-test_mdc1200.Po
+#	$(AM_V_CC)source='tests/test_mdc1200.c' object='tests/test_plcode-test_mdc1200.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_mdc1200.obj `if test -f 'tests/test_mdc1200.c'; then $(CYGPATH_W) 'tests/test_mdc1200.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_mdc1200.c'; fi`
 
 tests/test_plcode-test_courtesy.o: tests/test_courtesy.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_courtesy.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo -c -o tests/test_plcode-test_courtesy.o `test -f 'tests/test_courtesy.c' || echo '$(srcdir)/'`tests/test_courtesy.c
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo tests/$(DEPDIR)/test_plcode-test_courtesy.Po
-#	$(AM_V_CC)source='tests/test_courtesy.c' object='tests/test_plcode-test_courtesy.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_courtesy.o `test -f 'tests/test_courtesy.c' || echo '$(srcdir)/'`tests/test_courtesy.c
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_courtesy.o -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo -c -o tests/test_plcode-test_courtesy.o `test -f 'tests/test_courtesy.c' || echo '$(srcdir)/'`tests/test_courtesy.c
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo tests/$(DEPDIR)/test_plcode-test_courtesy.Po
+#	$(AM_V_CC)source='tests/test_courtesy.c' object='tests/test_plcode-test_courtesy.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_courtesy.o `test -f 'tests/test_courtesy.c' || echo '$(srcdir)/'`tests/test_courtesy.c
 
 tests/test_plcode-test_courtesy.obj: tests/test_courtesy.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_courtesy.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo -c -o tests/test_plcode-test_courtesy.obj `if test -f 'tests/test_courtesy.c'; then $(CYGPATH_W) 'tests/test_courtesy.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_courtesy.c'; fi`
-	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo tests/$(DEPDIR)/test_plcode-test_courtesy.Po
-#	$(AM_V_CC)source='tests/test_courtesy.c' object='tests/test_plcode-test_courtesy.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_courtesy.obj `if test -f 'tests/test_courtesy.c'; then $(CYGPATH_W) 'tests/test_courtesy.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_courtesy.c'; fi`
+#	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -MT tests/test_plcode-test_courtesy.obj -MD -MP -MF tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo -c -o tests/test_plcode-test_courtesy.obj `if test -f 'tests/test_courtesy.c'; then $(CYGPATH_W) 'tests/test_courtesy.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_courtesy.c'; fi`
+#	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test_plcode-test_courtesy.Tpo tests/$(DEPDIR)/test_plcode-test_courtesy.Po
+#	$(AM_V_CC)source='tests/test_courtesy.c' object='tests/test_plcode-test_courtesy.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) 
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_plcode_CFLAGS) $(CFLAGS) -c -o tests/test_plcode-test_courtesy.obj `if test -f 'tests/test_courtesy.c'; then $(CYGPATH_W) 'tests/test_courtesy.c'; else $(CYGPATH_W) '$(srcdir)/tests/test_courtesy.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

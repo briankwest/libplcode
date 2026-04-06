@@ -1,3 +1,4 @@
-libplcode-dev-dbgsym_0.1.0-1_arm64.ddeb debug optional architecture=arm64 automatic=yes
-libplcode-dev_0.1.0-1_arm64.deb libdevel optional architecture=arm64
-libplcode_0.1.0-1_arm64.buildinfo libdevel optional
+libplcode-dev_1.0.1-1_arm64.deb libdevel optional architecture=arm64
+libplcode0-dbgsym_1.0.1-1_arm64.ddeb debug optional architecture=arm64 automatic=yes
+libplcode0_1.0.1-1_arm64.deb libs optional architecture=arm64
+libplcode_1.0.1-1_arm64.buildinfo libs optional

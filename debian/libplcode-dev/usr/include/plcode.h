@@ -17,6 +17,17 @@
 extern "C" {
 #endif
 
+/* Version */
+#define PLCODE_VERSION_MAJOR 1
+#define PLCODE_VERSION_MINOR 0
+#define PLCODE_VERSION_PATCH 1
+
+#ifdef PLCODE_GIT_HASH
+#define PLCODE_VERSION_STRING "1.0.1+" PLCODE_GIT_HASH
+#else
+#define PLCODE_VERSION_STRING "1.0.1"
+#endif
+
 /* Error codes */
 #define PLCODE_OK            0
 #define PLCODE_ERR_PARAM    -1

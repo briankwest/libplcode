@@ -1,22 +1,17 @@
 Package: libplcode-dev
 Source: libplcode
-Version: 0.1.0-1
+Version: 1.0.1-1
 Architecture: arm64
-Maintainer: Brian West <brian@bkw.org>
-Installed-Size: 207
+Maintainer: Brian West <brian@kerchunk.net>
+Installed-Size: 136
+Depends: libplcode0 (= 1.0.1-1)
 Section: libdevel
 Priority: optional
+Multi-Arch: same
 Homepage: https://github.com/briankwest/libplcode
-Description: Two-way radio signaling codec library (CTCSS/DCS/DTMF/CW ID)
+Description: Two-way radio signaling codec library — development files
  libplcode is a portable C99 library for encoding and decoding two-way radio
- signaling tones and codes in signed 16-bit linear PCM audio. It supports
- CTCSS (PL) tones, DCS (DPL) codes, DTMF tones, CW ID (Morse code),
- MCW (Modulated CW), FSK CW, Two-Tone Sequential Paging, Five-Tone Selective
- Call (ZVEI/CCIR/EIA), MDC-1200 signaling, tone burst access, and courtesy
- tones.
+ signaling tones and codes in signed 16-bit linear PCM audio.
  .
- The library uses fixed-point DSP throughout with zero external dependencies
- beyond libc and libm. All codecs follow a create/process/destroy lifecycle
- with opaque context structs and allocation-free streaming.
- .
- This package provides the static library and development header.
+ This package provides the header, static library, and pkg-config file
+ needed to build applications against libplcode.

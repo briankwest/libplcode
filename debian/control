@@ -1,7 +1,7 @@
 Source: libplcode
 Section: libs
 Priority: optional
-Maintainer: Brian West <brian@mcalester.net>
+Maintainer: Brian West <brian@kerchunk.net>
 Build-Depends: debhelper-compat (= 13), build-essential, autoconf, automake, libtool
 Standards-Version: 4.6.2
 Homepage: https://github.com/briankwest/libplcode

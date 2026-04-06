@@ -30,7 +30,7 @@ libplcode_la_SOURCES = \
 	src/plcode_courtesy_enc.c \
 	src/plcode_tone_enc.c
 
-libplcode_la_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src
+libplcode_la_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src -DPLCODE_GIT_HASH=\"@GIT_HASH@\"
 libplcode_la_LDFLAGS = -version-info 0:0:0
 libplcode_la_LIBADD = -lm
 
@@ -63,7 +63,7 @@ test_plcode_SOURCES = \
 	tests/test_mdc1200.c \
 	tests/test_courtesy.c
 
-test_plcode_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src
+test_plcode_CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -I$(top_srcdir)/include -I$(top_srcdir)/src -DPLCODE_GIT_HASH=\"@GIT_HASH@\"
 test_plcode_LDADD = libplcode.la -lm
 
 TESTS = test_plcode
