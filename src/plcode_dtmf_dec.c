@@ -277,6 +277,24 @@ static void process_block(plcode_dtmf_dec_t *c, plcode_dtmf_result_t *result)
         if (raw_idx == c->current_digit) {
             /* Still detecting same digit — reset miss counter */
             c->miss_count = 0;
+        } else if (raw_idx >= 0 && raw_idx != c->current_digit) {
+            /* Different digit detected — the previous digit ended and a new
+             * one has begun.  Skip cooldown and jump straight to PENDING
+             * for the new digit.  This handles fast auto-dialed DTMF (e.g.
+             * 150ms tones with 50ms gaps) where the inter-digit silence is
+             * too short for misses_to_end consecutive misses. */
+            c->cooldown_digit = c->current_digit;
+            c->current_digit = raw_idx;
+            c->hit_count = 1;
+            c->miss_count = 0;
+            if (c->hits_to_begin <= 1) {
+                c->state = DTMF_ST_ACTIVE;
+                fill_result(result, c->current_digit);
+            } else {
+                c->state = DTMF_ST_PENDING;
+                fill_result(result, -1);
+            }
+            break;
         } else {
             c->miss_count++;
             if (c->miss_count >= c->misses_to_end) {
