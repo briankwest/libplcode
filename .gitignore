@@ -24,6 +24,7 @@ tests/.dirstamp
 /config.lt
 /config.status
 /configure
+/configure~
 /libtool
 /Makefile
 /Makefile.in
@@ -46,6 +47,8 @@ test-suite.log
 /debian/files
 /debian/*.substvars
 /debian/libplcode-dev/
+/debian/libplcode0/
+/debian/libplcode0-dbgsym/
 /debian/tmp/
 /debian/autoreconf.*
 
